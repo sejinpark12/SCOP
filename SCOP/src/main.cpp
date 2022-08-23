@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 18:24:49 by sejpark           #+#    #+#             */
-/*   Updated: 2022/08/22 18:25:23 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/08/23 13:21:47 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
     Window window{{.title = "SCOP", .size = {SCR_WIDTH, SCR_HEIGHT}}};
 
     window.run([&app, &window] {
-			app.display = eglGetDisplay(EGL_NO_DISPLAY);
+			app.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 			if (app.display == EGL_NO_DISPLAY) {
 				spdlog::error("기본 디스플레이로부터 EGLDisplay를 얻을 수 없습니다.");
 				std::terminate();
@@ -46,7 +46,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 			EGL_TEST(eglBindAPI(EGL_OPENGL_ES_API));
 
 			EGLint config_attributes[] = {
-				EGL_RED_size, 8,
+				EGL_RED_SIZE, 8,
 				EGL_GREEN_SIZE, 8,
 				EGL_BLUE_SIZE, 8,
 				EGL_ALPHA_SIZE, 8,
@@ -77,7 +77,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 	   },
 	   [] {},
 	   [&app] {
-		   GL_TEST(glClearColor(0.2f, 0.2f, 0.2f, 1.0f));
+		   GL_TEST(glClearColor(0.2f, 0.2f, 0.5f, 1.0f));
 		   GL_TEST(glClear(GL_COLOR_BUFFER_BIT));
 
 		   EGL_TEST(eglSwapBuffers(app.display, app.surface));
