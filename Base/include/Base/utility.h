@@ -7,6 +7,7 @@
 
 #include <array>
 #include <filesystem>
+#include <iostream>
 #include <spdlog/spdlog.h>
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
@@ -67,6 +68,7 @@ void startup(App &app, Window &window) {
 
     EGL_TEST(eglInitialize(app.display, nullptr, nullptr));
     EGL_TEST(eglBindAPI(EGL_OPENGL_ES_API));
+	std::cout << "EGL_VERSION: " << eglQueryString(app.display, EGL_VERSION) << std::endl;
 
     EGLint num_config;
     EGL_TEST(eglChooseConfig(app.display, nullptr, &app.config, 1, &num_config));
