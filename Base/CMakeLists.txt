@@ -7,10 +7,12 @@ add_library(Base
     include/Base/utility.h
     include/Base/camera.h
     include/Base/input.h
+	include/Base/Shader.h
     src/Window.cpp
     src/utility.cpp
 	src/camera.cpp
-	src/input.cpp)
+	src/input.cpp
+	src/Shader.cpp)
 
 target_include_directories(Base
     PUBLIC include)

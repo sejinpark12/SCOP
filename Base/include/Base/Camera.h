@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Camera.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/31 16:43:56 by sejpark           #+#    #+#             */
+/*   Updated: 2022/08/31 16:43:58 by sejpark          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 //
 // Created by Sejin Park on 2021/12/29.
 //
@@ -10,7 +22,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <SDL.h>
 
-// 기본 카메라 설정값
+/// 기본 카메라 설정값
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
 const float ZOOM = 45.0f;
@@ -18,13 +30,13 @@ const float ZOOM = 45.0f;
 /// 카메라 클래스.
 class Camera {
 private:
-    // 카메라 속성
+    /// 카메라 속성
     glm::vec3 position_;
     glm::vec3 front_;
     glm::vec3 up_;
     glm::vec3 right_;
     glm::vec3 worldup_;
-    // 오일러 각
+    /// 오일러 각
     float yaw_;
     float pitch_;
 

@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 18:24:49 by sejpark           #+#    #+#             */
-/*   Updated: 2022/08/24 19:29:31 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/08/31 19:50:27 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <GLES3/gl3.h>
 #include <Base/Window.h>
 #include <Base/utility.h>
+#include <Base/Shader.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
@@ -96,11 +97,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 
     window.run([&app, &window] {
 			startup(app,window);
-
-			std::cout << "GL_VENDOR: " <<  glGetString(GL_VENDOR) << std::endl;
-			std::cout << "GL_RENDERER: " << glGetString(GL_RENDERER) << std::endl;
-			std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
-			std::cout << "GL_SHADING_LANGUAGE_VERSION: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+			printAPIInfo(app);
 
 			GL_TEST(glEnable(GL_DEPTH_TEST));
 			GL_TEST(glGenBuffers(1, &app.vertex_buffer));
@@ -127,8 +124,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 						GL_OFFSETOF(Vertex, color)));
 			GL_TEST(glBindVertexArray(0));
 
-			app.program = create_graphics_pipeline({home() / "SCOP/res/triangle.vert",
-													home() / "SCOP/res/unlit.frag"});
+			Shader shader({home() / "SCOP/res/triangle.vert",
+						   home() / "SCOP/res/unlit.frag"});
+			app.program = shader.getProgramId();
 	   },
 	   [] {},
 	   [&app, &window] {
