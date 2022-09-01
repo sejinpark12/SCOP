@@ -8,11 +8,16 @@ add_library(Base
     include/Base/camera.h
     include/Base/input.h
 	include/Base/Shader.h
+	include/Base/Mesh.h
+	include/Base/Model.h
+	include/stb_image.h
     src/Window.cpp
     src/utility.cpp
 	src/camera.cpp
 	src/input.cpp
-	src/Shader.cpp)
+	src/Shader.cpp
+	src/Mesh.cpp
+	src/Model.cpp)
 
 target_include_directories(Base
     PUBLIC include)
@@ -26,6 +31,7 @@ target_compile_definitions(Base
 find_package(spdlog CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
+find_package(assimp CONFIG REQUIRED)
 find_package(EGL REQUIRED)
 find_package(GLESv3 REQUIRED)
 
@@ -33,6 +39,7 @@ target_link_libraries(Base
     PUBLIC spdlog::spdlog
            glm::glm
            SDL2::SDL2
+		   assimp::assimp
            EGL
            GLESv3)
 
