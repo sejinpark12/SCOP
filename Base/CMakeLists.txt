@@ -31,6 +31,7 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
 find_package(assimp CONFIG REQUIRED)
+find_package(imgui CONFIG REQUIRED)
 find_package(EGL REQUIRED)
 find_package(GLESv3 REQUIRED)
 
@@ -39,6 +40,7 @@ target_link_libraries(Base
            glm::glm
            SDL2::SDL2
            assimp::assimp
+           imgui::imgui
            EGL
            GLESv3)
 
