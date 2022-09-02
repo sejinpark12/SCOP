@@ -10,8 +10,8 @@
 #include <glm/glm.hpp>
 #include <SDL.h>
 
-#include "Camera.h"
-#include "Input.h"
+#include <Base/Camera.h>
+#include <Base/Input.h>
 
 /// 윈도우 클래스.
 class Window {

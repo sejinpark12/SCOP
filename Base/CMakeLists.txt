@@ -7,17 +7,16 @@ add_library(Base
     include/Base/utility.h
     include/Base/camera.h
     include/Base/input.h
-	include/Base/Shader.h
-	include/Base/Mesh.h
-	include/Base/Model.h
-	include/stb_image.h
+    include/Base/Shader.h
+    include/Base/Mesh.h
+    include/Base/Model.h
     src/Window.cpp
     src/utility.cpp
-	src/camera.cpp
-	src/input.cpp
-	src/Shader.cpp
-	src/Mesh.cpp
-	src/Model.cpp)
+    src/camera.cpp
+    src/input.cpp
+    src/Shader.cpp
+    src/Mesh.cpp
+    src/Model.cpp)
 
 target_include_directories(Base
     PUBLIC include)
@@ -39,9 +38,12 @@ target_link_libraries(Base
     PUBLIC spdlog::spdlog
            glm::glm
            SDL2::SDL2
-		   assimp::assimp
+           assimp::assimp
            EGL
            GLESv3)
+
+find_path(STB_INCLUDE_DIRS "stb_c_lexer.h")
+target_include_directories(Base PRIVATE ${STB_INCLUDE_DIRS})
 
 if(${CMAKE_SYSTEM_NAME} MATCHES Darwin)
     target_sources(Base

@@ -116,11 +116,11 @@ std::filesystem::path home();
 
 template<typename App>
 void printAPIInfo(App &app) {
-	std::cout << "EGL_VERSION: " << eglQueryString(app.display, EGL_VERSION) << std::endl;
-	std::cout << "GL_VENDOR: " <<  glGetString(GL_VENDOR) << std::endl;
-	std::cout << "GL_RENDERER: " << glGetString(GL_RENDERER) << std::endl;
-	std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
-	std::cout << "GL_SHADING_LANGUAGE_VERSION: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+    std::cout << "EGL_VERSION: " << eglQueryString(app.display, EGL_VERSION) << std::endl;
+    std::cout << "GL_VENDOR: " <<  glGetString(GL_VENDOR) << std::endl;
+    std::cout << "GL_RENDERER: " << glGetString(GL_RENDERER) << std::endl;
+    std::cout << "GL_VERSION: " << glGetString(GL_VERSION) << std::endl;
+    std::cout << "GL_SHADING_LANGUAGE_VERSION: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 }
 
 #endif //UTILITY_H

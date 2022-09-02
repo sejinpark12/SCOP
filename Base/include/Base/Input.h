@@ -9,7 +9,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <SDL.h>
-#include "Camera.h"
+#include <Base/Camera.h>
 
 // 기본 입력 설정값
 const float KEYBOARD_SPEED = 0.01;

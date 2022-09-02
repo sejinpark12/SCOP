@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 16:06:50 by sejpark           #+#    #+#             */
-/*   Updated: 2022/09/01 18:57:06 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/09/02 15:52:42 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,51 +17,54 @@
 #include <cstddef>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "Base/Shader.h"
 #include <string>
 #include <vector>
+#include <Base/Shader.h>
+#include <Base/utility.h>
 
 struct Vertex {
-	// position
-	glm::vec3 Position;
-	// normal
-	glm::vec3 Normal;
-	// texCoords
-	glm::vec2 TexCoords;
+    // position
+    glm::vec3 Position;
+    // normal
+    glm::vec3 Normal;
+    // texCoords
+    glm::vec2 TexCoords;
 };
 
 struct Texture {
-	unsigned int id;
-	std::string type;
-	std::string path;
+    unsigned int id;
+    std::string type;
+    std::string path;
 };
 
 class Mesh {
 private:
-	// render data
-	unsigned int VAO_;
-	unsigned int VBO_;
-	unsigned int EBO_;
+    // render data
+    GLuint vertex_array_;
+    GLuint vertex_buffer_;
+    GLuint index_buffer_;
 
 public:
-	// mesh Data
-	std::vector<Vertex> vertices_;
-	std::vector<unsigned int> indices_;
-	std::vector<Texture> textures_;
+    // mesh Data
+    std::vector<Vertex> vertices_;
+    std::vector<unsigned int> indices_;
+    std::vector<Texture> textures_;
 
-	// constructor
-	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
-		 std::vector<Texture> textures);
+    // constructor
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
+         std::vector<Texture> textures);
 
-	~Mesh();
+    ~Mesh();
 
-	// render the mesh
-	//void Draw(Shader &shader);
-	void Draw(GLuint programId);
+    // render the mesh
+    //void Draw(Shader &shader);
+    void Draw(GLuint programId);
+
+    void clearMesh();
 
 private:
-	// initializes all the buffer objects/arrays
-	void setupMesh();
+    // initializes all the buffer objects/arrays
+    void setupMesh();
 };
 
 #endif //MESH_H
