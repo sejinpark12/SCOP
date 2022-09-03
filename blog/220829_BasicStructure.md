@@ -4,9 +4,9 @@
 
 ## 개요
 먼저 Base 디렉토리의 **Window.h, Window.cpp** 와 **utility.h, utility.cpp** 가 있습니다. 
-**Window.cpp** 는 Window 클래스를 정의하고 있습니다. Window 클래스에서는 SDL 라이브러리를 사용하여 윈도우 생성, 제거, 렌더링 루프, 이벤트 등에 대한 동작을 담당합니다.
-**utility.h** 는 EGL 초기화와 객체 생성, 파괴에 대한 동작을 담당합니다. **utility.cpp** 는 셰이더를 생성하고 프로그램을 생성하는 동작을 담당합니다. 하지만 지금은 사용하지 않고 나중에 사용하게 될 것입니다.
-마지막으로 08.MakeCurrentEGL 디렉토리의 **main.cpp** 에서 작성한 로직을 실행시킵니다.
+- **Window.cpp** 는 Window 클래스를 정의하고 있습니다. Window 클래스에서는 SDL 라이브러리를 사용하여 윈도우 생성, 제거, 렌더링 루프, 이벤트 등에 대한 동작을 담당합니다.
+- **utility.h** 는 EGL 초기화와 객체 생성, 파괴에 대한 동작을 담당합니다. **utility.cpp** 는 셰이더를 생성하고 프로그램을 생성하는 동작을 담당합니다. 하지만 지금은 사용하지 않고 나중에 사용하게 될 것입니다.
+- 마지막으로 08.MakeCurrentEGL 디렉토리의 **main.cpp** 에서 작성한 로직을 실행시킵니다.
 
 ## 실행 흐름 따라가기
 
@@ -14,7 +14,7 @@ main 문을 실행했을 때 프로그램이 어떻게 동작하는지 단계별
 
 ### 1. app 객체와 window 객체 생성
 
-main 문이 실행되면 먼저 App 타입의 `app` 객체가 생성됩니다. main문 위쪽에 App 구조체가 정의되어 있습니다. App 구조체는 EGL을 사용하는데 필요한 데이터들을 멤버변수로 가집니다.
+main 문이 실행되면 먼저 App 타입의 `app` 객체가 생성됩니다. main문 위에 App 구조체가 정의되어 있습니다. App 구조체는 EGL을 사용하는데 필요한 데이터들을 멤버변수로 가집니다.
 
 ```cpp
 // 08.MakeCurrentEGL/src/main.cpp
@@ -28,7 +28,9 @@ struct App {
 };
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
+    // app 객체 생성
     App app{};
+    // window 객체 생성
     Window window{{.title = "Current EGL 만들기", .size = {1280, 720}}};
 
     ...
@@ -47,6 +49,7 @@ Window::Window(const Descriptor &descriptor) {
         throw std::runtime_error("Fail to create Window.");
     }
 
+    // 네이티브 윈도우 생성
     window_ = SDL_CreateWindow(descriptor.title.c_str(),
                                SDL_WINDOWPOS_CENTERED,
                                SDL_WINDOWPOS_CENTERED,
@@ -92,7 +95,7 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
 
 `startup` 함수에서는 이전 장에서 정리했던 EGL 초기 설정에 대한 동작이 포함될 것입니다.
 while 문은 윈도우가 닫히기 전까지 `update` 함수와 `render` 함수를 매 프레임마다 반복적으로 실행합니다. 따라서 렌더링 연산들은 while 문의 스코프 안쪽 함수들에서 실행됩니다.
-마지막으로 윈도우가 닫히게 되어 while 문을 빠져나가게 된다면 `shutdown` 함수에서 생성된 EGL을 정리합니다.
+마지막으로 윈도우가 닫혀서 while 문을 빠져나가게 된다면 `shutdown` 함수에서 EGL을 정리합니다.
 
 다시 main문으로 돌아와서
 
