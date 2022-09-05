@@ -10,6 +10,8 @@
 #include <spdlog/spdlog.h>
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_impl_sdl.h>
 
 #include "Window.h"
 
@@ -88,6 +90,14 @@ void startup(App &app, Window &window) {
     }
 
     EGL_TEST(eglMakeCurrent(app.display, app.surface, app.surface, app.context));
+
+    IMGUI_CHECKVERSION();
+    app.imguiContext = ImGui::CreateContext();
+    ImGui::SetCurrentContext(app.imguiContext);
+    ImGui_ImplSDL2_InitForOpenGL(window.getWindow(), app.context);
+    ImGui_ImplOpenGL3_Init();
+    ImGui_ImplOpenGL3_CreateFontsTexture();
+    ImGui_ImplOpenGL3_CreateDeviceObjects();
 }
 
 /// EGL 객체 파괴 및 종료를 합니다.
@@ -95,6 +105,12 @@ void startup(App &app, Window &window) {
 /// \param app App 객체입니다.
 template<typename App>
 void shutdown(App &app) {
+    ImGui_ImplOpenGL3_DestroyFontsTexture();
+    ImGui_ImplOpenGL3_DestroyDeviceObjects();
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext(app.imguiContext);
+
     EGL_TEST(eglMakeCurrent(app.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT));
 
     EGL_TEST(eglDestroySurface(app.display, app.surface));

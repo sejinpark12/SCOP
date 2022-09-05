@@ -72,6 +72,10 @@ public:
     /// \return 현재 윈도우의 DPI입니다.
     [[nodiscard]] float dpi() const;
 
+    /// 윈도우 객체의 주소를 반환합니다.
+    /// \return 현재 SDL 윈도우의 객체의 주소입니다.
+    [[nodiscard]] SDL_Window *getWindow() const;
+
     /// 카메라를 반환합니다.
     /// \return camera_ 맴버변수입니다.
     [[nodiscard]] Camera &get_camera();

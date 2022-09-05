@@ -7,6 +7,8 @@
 #include <stdexcept>
 #include <spdlog/spdlog.h>
 #include <SDL_syswm.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_impl_sdl.h>
 
 Window::Window(const Descriptor &descriptor) : input_(descriptor.size.x / 2, descriptor.size.y / 2) {
     if (SDL_Init(SDL_INIT_VIDEO)) {
@@ -51,6 +53,10 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
     SDL_ShowWindow(window_);
 
     while (process_event()) {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui::NewFrame();
+
         currentFrame = SDL_GetTicks();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -69,6 +75,9 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
 
         update();
         render();
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
     SDL_HideWindow(window_);
@@ -106,12 +115,21 @@ bool Window::process_event() const {
         if (should_close_window(event)) {
             return false;
         }
+        ImGui_ImplSDL2_ProcessEvent(&event);
+        if (event.type == SDL_QUIT)
+            return false;
+        if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window_))
+            return true;
     }
     return true;
 }
 
 bool Window::should_close_window(const SDL_Event &event) const {
     return event.window.windowID == SDL_GetWindowID(window_) && event.window.event == SDL_WINDOWEVENT_CLOSE;
+}
+
+SDL_Window *Window::getWindow() const {
+    return window_;
 }
 
 Camera &Window::get_camera() {

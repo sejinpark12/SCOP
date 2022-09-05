@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 18:24:49 by sejpark           #+#    #+#             */
-/*   Updated: 2022/09/02 19:43:18 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/09/05 19:54:29 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 #include <GLES3/gl3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <imgui.h>
 #include <iostream>
 #include <Base/Window.h>
 #include <Base/utility.h>
@@ -38,12 +40,15 @@ struct App {
     GLint view_location{0};
     GLint projection_location{0};
     Model *model{nullptr};
+    ImGuiContext *imguiContext{nullptr};
 };
 
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 
 const float fov = 45.0f;
+
+glm::vec4 backGroundColor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
     App app{};
@@ -53,6 +58,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             startup(app,window);
             printAPIInfo(app);
 
+
             GL_TEST(glEnable(GL_DEPTH_TEST));
             Shader shader({home() / "SCOP/res/triangle.vert",
                            home() / "SCOP/res/unlit.frag"});
@@ -61,7 +67,17 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
        },
        [] {},
        [&app, &window] {
-           GL_TEST(glClearColor(0.2f, 0.2f, 0.2f, 1.0f));
+           if (ImGui::Begin("my first ImGui window")) {
+                ImGui::Text("This is first text...");
+           }
+           ImGui::End();
+
+           if (ImGui::Begin("ui window")) {
+                ImGui::ColorEdit4("clear color", glm::value_ptr(backGroundColor));
+           }
+           ImGui::End();
+
+           GL_TEST(glClearColor(backGroundColor.r, backGroundColor.g, backGroundColor.b, backGroundColor.a));
            GL_TEST(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
            GL_TEST(glViewport(0, 0, window.size().x * window.dpi(), 
@@ -87,6 +103,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 
            GL_TEST(glBindVertexArray(0));
            GL_TEST(glUseProgram(0));
+
+           ImGui::Render();
+           ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
            EGL_TEST(eglSwapBuffers(app.display, app.surface));
        },
