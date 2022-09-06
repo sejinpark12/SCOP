@@ -2,6 +2,11 @@
 # Created by Daemyung Jang on 2021/09/01.
 #
 
+message(STATUS "Compiler")
+message(STATUS " - ID       \t: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS " - Version  \t: ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS " - Path     \t: ${CMAKE_CXX_COMPILER}")
+
 add_library(Base
     include/Base/Window.h
     include/Base/utility.h

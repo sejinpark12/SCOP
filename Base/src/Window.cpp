@@ -69,8 +69,9 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
             SDL_WarpMouseInWindow(window_, size.x / 2, size.y / 2);
             firstMouse = false;
         }
-        SDL_GetMouseState(&xpos, &ypos);
-        input_.processMouse(xpos, ypos, camera_);
+        Uint32 buttons = SDL_GetMouseState(&xpos, &ypos);
+        if ((buttons & SDL_BUTTON_LMASK) != 0)
+            input_.processMouse(xpos, ypos, camera_);
         camera_.updateCameraVectors();	
 
         update();
@@ -109,11 +110,16 @@ void Window::size(const glm::ivec2 &size) {
     SDL_SetWindowSize(window_, size.x, size.y);
 }
 
-bool Window::process_event() const {
+bool Window::process_event() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (should_close_window(event)) {
             return false;
+        }
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+            int xpos, ypos;
+            SDL_GetMouseState(&xpos, &ypos);
+            input_.setLastMousePos(xpos, ypos);
         }
         ImGui_ImplSDL2_ProcessEvent(&event);
         if (event.type == SDL_QUIT)

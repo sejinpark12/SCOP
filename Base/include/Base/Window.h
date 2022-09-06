@@ -83,7 +83,7 @@ public:
 private:
     /// 이벤트를 처리합니다.
     /// \return 이벤트 루프를 유지하는 경우는 참, 종료하는 경우는 거짓을 반환합니다.
-    [[nodiscard]] bool process_event() const;
+    [[nodiscard]] bool process_event();
 
     /// 윈도우가 종료되어야 하는지 판단합니다.
     /// \param event 이벤트 객체입니다.

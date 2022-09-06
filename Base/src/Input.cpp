@@ -41,3 +41,8 @@ void Input::processMouse(const int &xpos, const int &ypos, Camera &cam) {
     if (cam.getPitch() < -89.0f)
         cam.setPitch(-89.0f);
 }
+
+void Input::setLastMousePos(const float last_xpos, const float last_ypos) {
+    last_xpos_ = last_xpos;
+    last_ypos_ = last_ypos;
+}

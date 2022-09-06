@@ -46,6 +46,11 @@ public:
     /// \param ypos 마우스의 현재 y 좌표입니다.
     /// \param cam 마우스 입력이 반영되는 카메라 객체입니다.
     void processMouse(const int &xpos, const int &ypos, Camera &cam);
+
+    /// 이전 마우스 좌표를 설정합니다.
+    /// \param last_xpos 마우스의 이전 x 좌표입니다.
+    /// \param last_ypos 마우스의 이전 y 좌표입니다.
+    void setLastMousePos(const float last_xpos, const float last_ypos);
 };
 
 #endif ///INPUT_H
