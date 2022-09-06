@@ -9,6 +9,7 @@
 #include <SDL_syswm.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_sdl.h>
+#include <iostream>
 
 Window::Window(const Descriptor &descriptor) : input_(descriptor.size.x / 2, descriptor.size.y / 2) {
     if (SDL_Init(SDL_INIT_VIDEO)) {
@@ -69,9 +70,9 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
             SDL_WarpMouseInWindow(window_, size.x / 2, size.y / 2);
             firstMouse = false;
         }
-        Uint32 buttons = SDL_GetMouseState(&xpos, &ypos);
-        if ((buttons & SDL_BUTTON_LMASK) != 0)
-            input_.processMouse(xpos, ypos, camera_);
+        Uint32 mouseBtns = SDL_GetMouseState(&xpos, &ypos);
+        input_.processMouse(mouseBtns, xpos, ypos, camera_);
+
         camera_.updateCameraVectors();	
 
         update();
@@ -116,10 +117,13 @@ bool Window::process_event() {
         if (should_close_window(event)) {
             return false;
         }
-        if (event.type == SDL_MOUSEBUTTONDOWN) {
+        if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
             int xpos, ypos;
             SDL_GetMouseState(&xpos, &ypos);
             input_.setLastMousePos(xpos, ypos);
+        }
+        if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_RIGHT) {
+            input_.setMouseRBtnDown(false);
         }
         ImGui_ImplSDL2_ProcessEvent(&event);
         if (event.type == SDL_QUIT)

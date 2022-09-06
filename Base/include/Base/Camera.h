@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:43:56 by sejpark           #+#    #+#             */
-/*   Updated: 2022/08/31 16:43:58 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/09/06 19:09:01 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ public:
     const glm::vec3 getPosition() const;
     const glm::vec3 getFront() const;
     const glm::vec3 getRight() const;
+    const glm::vec3 getUp() const;
     const float getYaw() const;
     const float getPitch() const;
 

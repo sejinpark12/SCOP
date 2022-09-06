@@ -44,6 +44,10 @@ const glm::vec3 Camera::getRight() const {
     return right_;
 }
 
+const glm::vec3 Camera::getUp() const {
+    return up_;
+}
+
 const GLfloat Camera::getYaw() const {
     return yaw_;
 }
