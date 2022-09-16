@@ -56,7 +56,13 @@ void glBufferData(GLenum target,
 위 그림은 이전 장에서 보았던 버텍스 셰이더의 입출력 데이터들에 대한 그림입니다. 여기서 왼쪽에 `Input(Attribute) 1 ~ N` 으로 들어오는 데이터가 버텍스 어트리뷰트 데이터 배열입니다.
 
 ```c
-void glVertexAttribPonter(GLuin index,
+void glEnableVertexAttribArray(GLuint index);
+```
+
+버텍스 어트리뷰트 배열은 비활성화 상태로 초기화되어 있습니다. 따라서 버텍스 셰이더에서 원하는 인덱스의 버텍스 어트리뷰트를 사용하기 위해서는 `glEnableVertexAttribArray` 로 해당 인덱스를 활성화시켜줘야 합니다.
+
+```c
+void glVertexAttribPonter(GLuint index,
                           GLint size,
                           GLenum type,
                           GLboolean normalized,
@@ -64,7 +70,14 @@ void glVertexAttribPonter(GLuin index,
                           const void *pointer);
 ```
 
-`glVertexAttribPointer` 는 파라미터 index에서의 버텍스 어트리뷰트 배열의 location과 데이터 형식을 지정합니다. 잘 이해가 되지 않을 것 같아서 다시 풀어서 설명을 해보겠습니다. 첫 번째 파라미터 index는 위 그림의 `Input(Attribute) 1 ~ N` 의 인덱스와 연결됩니다. 그리고 나머지 파라미터들은 버텍스 버퍼에 들어있는 데이터의 형식을 지정하는 것입니다. 
+`glVertexAttribPointer` 는 파라미터 index에서의 버텍스 어트리뷰트 배열의 location과 데이터 형식을 지정합니다. 잘 이해가 되지 않을 것 같아서 다시 풀어서 설명을 해보겠습니다. 첫 번째 파라미터 index는 위 그림의 `Input(Attribute) 1 ~ N` 의 인덱스와 연결됩니다. 그리고 나머지 파라미터들은 버텍스 버퍼에 들어있는 데이터의 형식을 지정하는 것입니다.
+
+- `index` : 설정할 버텍스 어트리뷰트 배열의 인덱스입니다.
+- `size` : 버텍스 어트리뷰트 당 원소의 수입니다.
+- `type` : 원소의 데이터 타입입니다.
+- `normalized` : 
+- `stride` : 버텍스 버퍼의 연속적인 메모리에 저장된 데이터 중 해당 버텍스 어트리뷰트로 설정할 데이터들 사이의 폭입니다. 만약 데이터들이 빈틈없이 들어차있다면(tightly packed) 0으로 설정할 수 있습니다. 그렇게 되면 OpenGL ES에서 stride를 자동으로 계산합니다.
+- `pointer` : 버텍스 버퍼의 시작지점에서 해당 버텍스 어트리뷰트로 설정할 데이터가 얼만큼 떨어져 있는지 나타내는 오프셋입니다. 
 
 ## 버텍스 버퍼 파괴
 
@@ -74,7 +87,87 @@ void glDeleteBuffers(GLsizei n, const GLuint *buffers);
 
 버텍스 버퍼를 사용하여 렌더링을 수행한 후 프로그램을 종료할 때, 생성했던 버텍스 버퍼 오브젝트를 파괴해주어야 합니다. `glDeleteBuffers` 를 호출하면 파라미터로 지정한 버퍼 오브젝트가 파괴되고 해당 버퍼 오브젝트를 참조하던 오브젝트 네임도 초기화 됩니다.
 
+## 삼각형 그리기
 
+[코드](https://github.com/GraphicsKorea/OpenGLES/blob/main/14.SetAttribute/src/main.cpp)
+
+```c
+// /14.SetAttribute/src/main.cpp
+
+...
+
+int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
+    ...
+
+    window.run([&app, &window] {
+        startup(app, window);
+
+        // 버텍스 버퍼 오브젝트 네임 생성
+        GL_TEST(glGenBuffers(1, &app.buffer));
+        // 버텍스 버퍼 오브젝트 바인딩
+        GL_TEST(glBindBuffer(GL_ARRAY_BUFFER, app.buffer));
+
+        // 삼각형 버텍스와 색상 초기화
+        const std::array<Vertex, 3> vertices = {
+            Vertex{{-0.5f, -0.5f,  0.0f},
+                   { 1.0f,  0.0f,  0.0f}},
+            Vertex{{ 0.5f, -0.5f,  0.0f},
+                   { 0.0f,  1.0f,  0.0f}},
+            Vertex{{ 0.0f,  0.5f,  0.0f},
+                   { 0.0f,  0.0f,  1.0f}}
+        };        
+        // 버텍스 버퍼 할당
+        GL_TEST(glBufferData(GL_ARRAY_BUFFER, byte_size(vertices), vertices.data(), GL_STATIC_DRAW));
+        // 버텍스 버퍼 오브젝트 바인딩 해제
+        GL_TEST(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+        app.program = create_graphics_pipeline({home() / "14.SetAttribute/res/triangle.vert",
+                                                home() / "14.SetAttribute/res/unlit.frag"});        
+    },
+    [] {},
+    [&app, &window] {
+        ...
+
+        // 버텍스 버퍼 오브젝트 바인딩
+        GL_TEST(glBindBuffer(GL_ARRAY_BUFFER, &app.buffer));
+
+        // 버텍스 어트리뷰트 배열 활성화
+        GL_TEST(glEnableVertexAttribArray(0));
+        GL_TEST(glEnableVertexAttribArray(1));
+        // 버텍스 어트리뷰트 속성 설정
+        GL_TEST(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), GL_OFFSETOF(Vertex, position)));
+        GL_TEST(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), GL_OFFSETOF(Vertex, color)));
+        // 버텍스 어트리뷰트 배열를 사용하여 렌더링
+        GL_TEST(glDrawArrays(GL_TRIANGLES, 0, 3));
+        // 버텍스 어트리뷰트 배열 비활성화
+        GL_TEST(glDisableVertexAttribArray(1));
+        GL_TEST(glDisableVertexAttribArray(0));
+        
+        GL_TEST(glUseProgram(0));
+        // 버텍스 버퍼 오브젝트 바인딩 해제
+        GL_TEST(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+        EGL_TEST(eglSwapBuffers(app.display, app.surface));
+    },
+    [&app] {
+        GL_TEST(glDeleteProgram(app.program));
+        app.program = 0;
+
+        // 버텍스 버퍼 파괴
+        GL_TEST(glDeleteBuffers(1, &app.buffer));
+        app.buffer = 0;
+
+        shutdown(app);
+    });
+
+    return 0;
+}
+
+```
+
+## 결과
+
+![triangle_image](./images/Screen%20Shot%202022-09-16%20at%203.26.34%20PM.png)
 
 ## 참고
 
@@ -85,3 +178,5 @@ void glDeleteBuffers(GLsizei n, const GLuint *buffers);
 - [Vertex Specification - OpenGL Wiki](https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Buffer_Object)
 - [OpenGL Context - OpenGL Wiki](https://www.khronos.org/opengl/wiki/OpenGL_Context)
 - [OpenGL ES Documentation](https://registry.khronos.org/OpenGL-Refpages/es3.0/)
+- [Following the Data - Learning Modern 3D Graphics Programming](https://nicolbolas.github.io/oldtut/Basics/Tut01%20Following%20the%20Data.html)
+- [Rendering fails completely when nonzero stride is used in glVertexAttribPointer - Stack Overflow](https://stackoverflow.com/questions/18228983/rendering-fails-completely-when-nonzero-stride-is-used-in-glvertexattribpointer)
