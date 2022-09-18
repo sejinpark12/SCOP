@@ -22,7 +22,7 @@
     if (!function) { \
         EGLint error = eglGetError(); \
         if (error != EGL_SUCCESS) { \
-            spdlog::error("{} with 0x{:x}.", STRING(function), error); \
+            SPDLOG_ERROR("{} with 0x{:x}.", STRING(function), error); \
             throw std::runtime_error("Err to call EGL function."); \
         } \
     } \
@@ -36,7 +36,7 @@
     function; \
     GLenum error = glGetError(); \
     if (error != GL_NO_ERROR) { \
-        spdlog::error("{} with 0x{:x}.", STRING(function), error); \
+        SPDLOG_ERROR("{} with 0x{:x}.", STRING(function), error); \
         throw std::runtime_error("Err to call GL function."); \
     } \
 } while(false)
@@ -63,7 +63,7 @@ template<typename App>
 void startup(App &app, Window &window) {
     app.display = eglGetDisplay(Window::native_display(window));
     if (app.display == EGL_NO_DISPLAY) {
-        spdlog::error("기본 디스플레이로부터 EGLDisplay를 얻을 수 없습니다.");
+        SPDLOG_ERROR("기본 디스플레이로부터 EGLDisplay를 얻을 수 없습니다.");
         std::terminate();
     }
 
@@ -79,13 +79,13 @@ void startup(App &app, Window &window) {
     };
     app.context = eglCreateContext(app.display, app.config, EGL_NO_CONTEXT, context_attributes);
     if (app.context == EGL_NO_CONTEXT) {
-        spdlog::error("EGLContext를 생성할 수 없습니다.");
+        SPDLOG_ERROR("EGLContext를 생성할 수 없습니다.");
         std::terminate();
     }
 
     app.surface = eglCreateWindowSurface(app.display, app.config, Window::native_window(window), nullptr);
     if (app.surface == EGL_NO_SURFACE) {
-        spdlog::error("EGLSurface를 생성할 수 없습니다.");
+        SPDLOG_ERROR("EGLSurface를 생성할 수 없습니다.");
         std::terminate();
     }
 
@@ -120,7 +120,7 @@ void shutdown(App &app) {
     app.context = EGL_NO_CONTEXT;
 
     if (!eglTerminate(app.display)) {
-        spdlog::error("EGL을 종료를 실패하였습니다.");
+        SPDLOG_ERROR("EGL을 종료를 실패하였습니다.");
         std::terminate();
     }
     app.display = EGL_NO_DISPLAY;
@@ -132,11 +132,11 @@ std::filesystem::path home();
 
 template<typename App>
 void printAPIInfo(App &app) {
-    spdlog::info("EGL Version: {}", eglQueryString(app.display, EGL_VERSION));
-    spdlog::info("GL Vendor: {}", (const char*)glGetString(GL_VENDOR));
-    spdlog::info("GL Renderer: {}", (const char*)glGetString(GL_RENDERER));
-    spdlog::info("GL Version: {}", (const char*)glGetString(GL_VERSION));
-    spdlog::info("GLSL Version: {}", (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
+    SPDLOG_INFO("EGL Version: {}", eglQueryString(app.display, EGL_VERSION));
+    SPDLOG_INFO("GL Vendor: {}", (const char*)glGetString(GL_VENDOR));
+    SPDLOG_INFO("GL Renderer: {}", (const char*)glGetString(GL_RENDERER));
+    SPDLOG_INFO("GL Version: {}", (const char*)glGetString(GL_VERSION));
+    SPDLOG_INFO("GLSL Version: {}", (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
 }
 
 #endif //UTILITY_H

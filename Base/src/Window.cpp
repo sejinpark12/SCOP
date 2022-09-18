@@ -13,7 +13,7 @@
 
 Window::Window(const Descriptor &descriptor) : input_(descriptor.size.x / 2, descriptor.size.y / 2) {
     if (SDL_Init(SDL_INIT_VIDEO)) {
-        spdlog::error("{}", SDL_GetError());
+        SPDLOG_ERROR("{}", SDL_GetError());
         throw std::runtime_error("Fail to create Window.");
     }
 
@@ -24,7 +24,7 @@ Window::Window(const Descriptor &descriptor) : input_(descriptor.size.x / 2, des
                                descriptor.size.y,
                                SDL_WINDOW_ALLOW_HIGHDPI);
     if (!window_) {
-        spdlog::error("{}", SDL_GetError());
+        SPDLOG_ERROR("{}", SDL_GetError());
         throw std::runtime_error("Fail to create Window.");
     }
 }
