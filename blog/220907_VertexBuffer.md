@@ -16,8 +16,8 @@ void glGenBuffers(GLsizei n, GLuint *buffers);
 위에서 `glGenBuffers` 를 호출하면 버퍼 오브젝트 네임을 생성한다고 했습니다. 하지만 버텍스 버퍼를 생생하기 위해 버퍼 오브젝트 네임을 생성한다는 것이 잘 이해가 되지 않습니다. 여기서 새로운 용어를 조금만 더 알아보고 넘어가겠습니다. 바로 **오브젝트** 와 **네임** 입니다.
 
 #### 오브젝트
-오브젝트를 이해하기 위해서는 OpenGL ES가 **스테이트 머신** 으로 정의되어 있다는 것을 알아야합니다. OpenGL ES가 스테이트 머신이므로 여러가지 OpenGL ES API를 호출하여 OpenGL ES의 상태를 변경하거나 또는, 상태를 알아낼 수 있고, 현재 상태를 사용하여 무언가를 렌더링할 수 있습니다.
-OpenGL ES 오브젝트는 **특정 상태를 저장**하고 있습니다. 어떤 오브젝트를 컨텍스트에 바인딩하면 그 오브젝트에 포함된 상태가 컨텍스트의 상태에 매핑됩니다. 그러므로 컨텍스트 상태에 대한 변경 사항은 바인딩된 오브젝트에 저장되고 현재 컨텍스트 상태에서 동작하는 함수는 바인딩된 오브젝트에 저장된 상태를 사용합니다.
+오브젝트를 이해하기 위해서는 OpenGL ES가 **스테이트 머신** 으로 정의되어 있다는 것을 알아야합니다. OpenGL ES는 스테이트 머신이므로 여러가지 OpenGL ES API를 호출하여 OpenGL ES의 현재 상태를 **변경**하거나 **쿼리**할 수 있고, 현재 상태를 사용하여 무언가를 렌더링할 수 있습니다.
+OpenGL ES 오브젝트는 **특정 상태를 저장**하고 있습니다. 어떤 오브젝트를 컨텍스트에 바인딩하면 그 오브젝트에 포함된 상태가 컨텍스트의 상태에 매핑됩니다. 그러므로 컨텍스트 상태에 대한 변경 사항은 바인딩된 오브젝트에 저장되고, 현재 컨텍스트 상태에서 동작하는 함수는 바인딩된 오브젝트에 저장된 상태를 사용합니다.
 오브젝트는 언제나 상태를 담고 있습니다. 각 특정 종류의 오브젝트는 담고 있는 특정 상태에 의해 정의됩니다. OpenGL ES 오브젝트는 특정 상태 그룹을 캡슐화하고 한 번의 함수 호출로 모든 상태를 변경하는 방법입니다.
 
 #### 네임
@@ -40,7 +40,7 @@ void glBufferData(GLenum target,
                   GLenum usage);
 ```
 
-위에서 버퍼 오브젝트를 생성하고 컨텍스트에 바인딩했습니다. 버퍼 오브젝트를 생성한 것이지 아직 실제 버퍼를 할당하지는 않은 상태임을 주의해야 합니다. 버퍼 오브젝트는 임의 크기의 선형 메모리 배열을 가지고 있습니다. 이 메모리 배열이 버퍼될 공간입니다. 이제 `glBufferData` 를 호출하여 메모리에 버퍼를 할당하고 버퍼에 값을 저장하겠습니다. 컨택스트의 현재 target에 바인딩된 버퍼 오브젝트에 대한 버퍼를 두 번째 파라미터인 size만큼 할당하고 data 파라미터가 가리키는 데이터를 버퍼에 저장합니다. 마지막 파라미터인 usage는 이 버퍼에 저장된 데이터의 사용 방식을 지정합니다. 현재 예제에서는 간단한 삼각형을 렌더링하는 것이므로 `GL_STATIC_DRAW` 를 파라미터로 지정합니다. 하지만 만약 버텍스의 값이 빈번하게 바뀌는 모델을 렌더링한다면 버텍스 버퍼를 할당할 때 `GL_DYNAMIC_DRAW` 로 설정해야 성능 상 유리합니다.
+위에서 버퍼 오브젝트를 생성하고 컨텍스트에 바인딩했습니다. 버퍼 오브젝트를 생성한 것이지 **아직 실제 버퍼를 할당하지는 않은 상태임을 주의해야 합니다.** 버퍼 오브젝트는 임의 크기의 **선형 메모리 배열**을 가지고 있습니다. 이 메모리 배열이 버퍼가 될 공간입니다. 이제 `glBufferData` 를 호출하여 메모리에 버퍼를 할당하고 버퍼에 값을 저장하겠습니다. 컨택스트의 현재 target에 바인딩된 버퍼 오브젝트에 대한 버퍼를 두 번째 파라미터인 size만큼 할당하고 data 파라미터가 가리키는 데이터를 버퍼에 저장합니다. 마지막 파라미터인 usage는 이 버퍼에 저장된 데이터의 사용 방식을 지정합니다. 현재 예제에서는 간단한 삼각형을 렌더링하는 것이므로 `GL_STATIC_DRAW` 를 파라미터로 지정합니다. 하지만 만약 버텍스의 값이 빈번하게 바뀌는 모델을 렌더링한다면 버텍스 버퍼를 할당할 때 `GL_DYNAMIC_DRAW` 로 설정해야 성능 상 유리합니다.
 
 ## 버텍스 셰이더에 버텍스 버퍼 전달
 
@@ -49,7 +49,7 @@ void glBufferData(GLenum target,
 2. 버텍스 버퍼 오브젝트를 컨텍스트에 바인딩했습니다.
 3. 바인딩된 버텍스 버퍼 오브젝트에서 버퍼를 할당하고 데이터를 저장했습니다.
 
-그 다음 작업은 무엇일까요? 버텍스 버퍼에 값이 저장됐다고 해서 버텍스 셰이더에서 버텍스 버퍼에 저장된 여러가지 데이터들을 바로 접근하여 사용할 수는 없습니다. 버텍스 셰이더가 버텍스 버퍼의 데이터에 접근하기 위해서는 버텍스 어트리뷰트 데이터의 배열을 정의해주어야 합니다.
+그 다음 작업은 무엇일까요? 버텍스 버퍼에 값이 저장됐다고 해서 **버텍스 셰이더에서 버텍스 버퍼에 저장된 여러가지 데이터들을 바로 접근하여 사용할 수는 없습니다.** 버텍스 셰이더가 버텍스 버퍼의 데이터에 접근하기 위해서는 **버텍스 어트리뷰트 데이터의 배열을 정의해주어야 합니다.**
 
 ![vertexshader](https://github.com/sejinpark12/SCOP/blob/main/blog/images/vertex_shader.jpeg?raw=true)
 
@@ -59,7 +59,7 @@ void glBufferData(GLenum target,
 void glEnableVertexAttribArray(GLuint index);
 ```
 
-버텍스 어트리뷰트 배열은 비활성화 상태로 초기화되어 있습니다. 따라서 버텍스 셰이더에서 원하는 인덱스의 버텍스 어트리뷰트를 사용하기 위해서는 `glEnableVertexAttribArray` 로 해당 인덱스를 활성화시켜줘야 합니다.
+버텍스 어트리뷰트 배열은 **비활성화 상태로 초기화**되어 있습니다. 따라서 버텍스 셰이더에서 원하는 인덱스의 버텍스 어트리뷰트를 사용하기 위해서는 `glEnableVertexAttribArray` 로 **해당 인덱스를 활성화**시켜줘야 합니다.
 
 ```c
 void glVertexAttribPonter(GLuint index,
@@ -70,14 +70,16 @@ void glVertexAttribPonter(GLuint index,
                           const void *pointer);
 ```
 
-`glVertexAttribPointer` 는 파라미터 index에서의 버텍스 어트리뷰트 배열의 location과 데이터 형식을 지정합니다. 잘 이해가 되지 않을 것 같아서 다시 풀어서 설명을 해보겠습니다. 첫 번째 파라미터 index는 위 그림의 `Input(Attribute) 1 ~ N` 의 인덱스와 연결됩니다. 그리고 나머지 파라미터들은 버텍스 버퍼에 들어있는 데이터의 형식을 지정하는 것입니다.
+`glVertexAttribPointer` 는 **버텍스 어트리뷰트 배열의 location과 데이터 형식을 지정합니다.** 잘 이해가 되지 않을 것 같아서 다시 풀어서 설명을 해보겠습니다. 첫 번째 파라미터 index는 위 그림의 `Input(Attribute) 1 ~ N` 의 인덱스와 연결됩니다. 그리고 나머지 파라미터들은 버텍스 버퍼에 들어있는 데이터의 형식을 지정하는 것입니다.
 
 - `index` : 설정할 버텍스 어트리뷰트 배열의 인덱스입니다.
 - `size` : 버텍스 어트리뷰트 당 원소의 수입니다.
 - `type` : 원소의 데이터 타입입니다.
-- `normalized` : 
+- `normalized` : GL_TRUE로 설정된 경우, 정수 형식으로 저장된 값이 [-1, 1](signed 값의 경우) 또는 [0, 1](unsigned 값의 경우) 범위로 매핑되어 부동 소수점으로 변환됩니다. GL_FALSE로 설정된 경우, 정규화 없이 부동 소수점으로 변환됩니다.
 - `stride` : 버텍스 버퍼의 연속적인 메모리에 저장된 데이터 중 해당 버텍스 어트리뷰트로 설정할 데이터들 사이의 폭입니다. 만약 데이터들이 빈틈없이 들어차있다면(tightly packed) 0으로 설정할 수 있습니다. 그렇게 되면 OpenGL ES에서 stride를 자동으로 계산합니다.
 - `pointer` : 버텍스 버퍼의 시작지점에서 해당 버텍스 어트리뷰트로 설정할 데이터가 얼만큼 떨어져 있는지 나타내는 오프셋입니다. 
+
+![glVertexAttribPointer](./images/glVertexAttribPointer.png)
 
 ## 버텍스 버퍼 파괴
 
@@ -85,7 +87,7 @@ void glVertexAttribPonter(GLuint index,
 void glDeleteBuffers(GLsizei n, const GLuint *buffers);
 ```
 
-버텍스 버퍼를 사용하여 렌더링을 수행한 후 프로그램을 종료할 때, 생성했던 버텍스 버퍼 오브젝트를 파괴해주어야 합니다. `glDeleteBuffers` 를 호출하면 파라미터로 지정한 버퍼 오브젝트가 파괴되고 해당 버퍼 오브젝트를 참조하던 오브젝트 네임도 초기화 됩니다.
+버텍스 버퍼를 사용하여 렌더링을 수행한 후 프로그램을 종료할 때, 생성했던 버텍스 버퍼 오브젝트를 파괴해주어야 합니다. `glDeleteBuffers` 를 호출하면 파라미터로 지정한 **버퍼 오브젝트가 파괴**되고 해당 버퍼 오브젝트를 참조하던 **오브젝트 네임도 초기화** 됩니다.
 
 ## 삼각형 그리기
 
@@ -180,3 +182,4 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 - [OpenGL ES Documentation](https://registry.khronos.org/OpenGL-Refpages/es3.0/)
 - [Following the Data - Learning Modern 3D Graphics Programming](https://nicolbolas.github.io/oldtut/Basics/Tut01%20Following%20the%20Data.html)
 - [Rendering fails completely when nonzero stride is used in glVertexAttribPointer - Stack Overflow](https://stackoverflow.com/questions/18228983/rendering-fails-completely-when-nonzero-stride-is-used-in-glvertexattribpointer)
+- [OpenGL ES iOS Attribute issues - Stack Overflow](https://stackoverflow.com/questions/18627902/opengl-es-ios-attribute-issues)
