@@ -152,19 +152,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 
 ![indexbuffer](./images/indexbuffer.png)
 
-## 버텍스 어레이의 의미
-버텍스 어레이의 목적 : cpu 최적화
-
-## 버텍스 어레이 오브젝트 생성
-
-## 버텍스 어레이 바인딩
-
-## 버텍스 어레이 파괴
-
-## 삼각형 그리기
-
-## 결과
-
 ## 참고
 
 - [OpenGLES - GraphicsKorea](https://github.com/GraphicsKorea/OpenGLES)
