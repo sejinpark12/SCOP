@@ -139,7 +139,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         // 버텍스 어트리뷰트 속성 설정
         GL_TEST(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), GL_OFFSETOF(Vertex, position)));
         GL_TEST(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), GL_OFFSETOF(Vertex, color)));
-        // 버텍스 어트리뷰트 배열를 사용하여 렌더링
+        // 버텍스 어트리뷰트 배열을 사용하여 렌더링
         GL_TEST(glDrawArrays(GL_TRIANGLES, 0, 3));
         // 버텍스 어트리뷰트 배열 비활성화
         GL_TEST(glDisableVertexAttribArray(1));
