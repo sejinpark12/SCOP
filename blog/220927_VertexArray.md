@@ -1,8 +1,8 @@
 # 버텍스 어레이 다루기
-그 다음은 **버텍스 어레이**를 다루어 보겠습니다. 화면을 렌더링할 때 동일한 오브젝트의 상태를 매 프레임마다 설정하면 OpenGL ES 함수를 불필요하게 많이 호출해서 CPU 자원이 낭비됩니다. 처음 한 번만 버텍스 어레이에 오브젝트의 상태를 저장하고 렌더링할 때마다 버텍스 어레이로 상태를 한번에 불러와서 OpenGL ES 함수호출이 감소합니다. 그 결과 CPU의 연산을 최적화 할 수 있습니다. 인덱스 버퍼 예제와 마찬가지로 사용하는 목적과 버텍스 어레이를 사용하는 방법에 대해 알아보겠습니다.
+그 다음은 **버텍스 어레이**를 다루어 보겠습니다. 화면을 렌더링할 때 동일한 오브젝트의 상태를 매 프레임마다 설정하면 OpenGL ES 함수를 불필요하게 많이 호출해서 CPU 자원이 낭비됩니다. 버텍스 어레이에 처음 한 번만 오브젝트의 상태를 저장하고 렌더링할 때마다 버텍스 어레이로부터 오브젝트의 모든 상태를 한번에 불러와서 OpenGL ES 함수호출을 줄일 수 있습니다. 그 결과 CPU의 연산을 최적화 할 수 있습니다. 인덱스 버퍼 예제와 마찬가지로 사용하는 목적과 버텍스 어레이를 사용하는 방법에 대해 알아보겠습니다.
 
 ## 버텍스 어레이의 의미
-버텍스 어레이 오브젝트(Vertex Array Object)는 버텍스 데이터를 제공하는 데 필요한 모든 상태를 저장하는 OpenGL ES 오브젝트입니다. 버텍스 데이터의 포맷과 버텍스 데이터 배열을 제공하는 버퍼 오브젝트들을 저장합니다. 버텍스 어레이 오브젝트는 버퍼를 참조할 뿐, 버퍼를 복사하거나 가지고 있지 않습니다.
+버텍스 어레이 오브젝트(Vertex Array Object)는 버텍스 데이터를 제공하는 데 필요한 모든 상태를 저장하는 OpenGL ES 오브젝트입니다. **버텍스 데이터의 포맷과 버텍스 데이터 배열을 제공하는 버퍼 오브젝트들을 저장합니다.** 버텍스 어레이 오브젝트는 버퍼를 참조할 뿐, 버퍼를 복사하거나 가지고 있지 않습니다.
 
 버퍼 오브젝트와 마찬가지로 생성, 바인딩, 파괴 함수를 가집니다.
 
@@ -81,14 +81,18 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
         GL_TEST(glBufferData(GL_ELEMENT_ARRAY_BUFFER, byte_size(indices), indices.data(), GL_STATIC_DRAW));
         GL_TEST(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
+        // 버텍스 어레이 오브젝트 생성
         GL_TEST(glGenVertexArrays(1, &app.vertex_array));
+        // 버텍스 어레이 오브젝트 바인딩
         GL_TEST(glBindVertexArray(app.vertex_array));
+        // 버텍스 어레이를 바인딩 한 다음부터 설정한 오브젝트의 상태들이 버텍스 어레이에 저장
         GL_TEST(glBindBuffer(GL_ARRAY_BUFFER, app.vertex_buffer));
         GL_TEST(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, app.index_buffer));
         GL_TEST(glEnableVertexAttribArray(0));
         GL_TEST(glEnableVertexAttribArray(1));
         GL_TEST(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), GL_OFFSETOF(Vertex, position)));
         GL_TEST(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), GL_OFFSETOF(Vertex, color)));
+        // 버텍스 어레이 오브젝트 바인딩 해제
         GL_TEST(glBindVertexArray(0));
 
         ...
@@ -97,8 +101,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
     [] {},
     [&app, &window] {
         ...
-
+        // 버텍스 어레이 오브젝트 바인딩
         GL_TEST(glBindVertexArray(app.vertex_array));
+        // 이전 장에서 렌더링할 때마다 OpenGL ES 함수들을 여러개 호출하여 오브젝트의 상태를 설정해주었지만
+        // 버텍스 어레이를 사용하여 바인드 함수호출 하나로 오브젝트의 상태를 한번에 설정할 수 있음
         GL_TEST(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr));
         GL_TEST(glBindVertexArray(0));
 
@@ -126,6 +132,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 ```
 
 ## 결과
+
+![vertexarray](./images/vertexarray.png)
 
 ## 참고
 
