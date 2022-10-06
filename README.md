@@ -6,14 +6,45 @@
 ### 사용 라이브러리
 - OpenGL ES 3.0, EGL 1.5, SDL2, GLM
 
-### 예상 수행 기간
-- 7일
+### 빌드
+
+> macOS 환경에서 프로젝트 실행 가능
+
+- [vcpkg](https://github.com/microsoft/vcpkg) 설치
+
+  1. vcpkg 다운로드
+    ```
+    $ git clone https://github.com/microsoft/vcpkg.git
+    $ ./vcpkg/bootstrap-vcpkg.sh
+    ```
+
+  2. 라이브러리 설치
+    ```
+    $ ./vcpkg/vcpkg install 'imgui[core,opengl3-binding,sdl2-binding]' assimp sdl2 glm catch2 spdlog
+    ```
+
+- SCOP 빌드
+  1. SCOP 다운로드
+    ```
+    $ git clone https://github.com/sejinpark12/SCOP.git && cd SCOP
+    ```
+
+  2. 빌드
+    ```
+    $ cmake -B out -S . -DCMAKE_TOOLCHAIN_FILE=[vcpkg의 경로]/scripts/buildsystems/vcpkg.cmake
+    $ cmake --build out
+    ```
+
+- 실행
+    ```
+    $ ./out/SCOP/SCOP
+    ```
 
 ### 필수 구현 사항
 1. Obj 파일 읽기
-2. 3D 오브젝트는 원근투영으로 보여져야 한다.
-3. 실시간으로 오브젝트에 텍스처 적용 및 해제(부드럽게 전환)
-4. 오브젝트의 중심 축으로 회전
+1. 3D 오브젝트는 원근투영으로 보여져야 한다.
+2. 실시간으로 오브젝트에 텍스처 적용 및 해제(부드럽게 전환)
+3. 오브젝트의 중심 축으로 회전
 
 ### 추가 구현 사항
 1. 오목한 평면, 비공 평면 3D 오브젝트를 올바르게 렌더링
