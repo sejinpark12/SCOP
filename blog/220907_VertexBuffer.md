@@ -62,7 +62,7 @@ void glEnableVertexAttribArray(GLuint index);
 버텍스 어트리뷰트 배열은 **비활성화 상태로 초기화**되어 있습니다. 따라서 버텍스 셰이더에서 원하는 인덱스의 버텍스 어트리뷰트를 사용하기 위해서는 `glEnableVertexAttribArray` 로 **해당 인덱스를 활성화**시켜줘야 합니다.
 
 ```c
-void glVertexAttribPonter(GLuint index,
+void glVertexAttribPointer(GLuint index,
                           GLint size,
                           GLenum type,
                           GLboolean normalized,
