@@ -80,9 +80,13 @@ void glTexParameteri(GLenum target, GLenum pname, GLint param);
 - 텍스처 필터링
 OpenGL ES은 부동 소수점 값인 텍스처 좌표를 맵핑할 텍셀을 계산해야 합니다. 매우 큰 폴리곤 매시나 아주 작은 텍스처를 사용할 경우에 이러한 계산이 중요합니다. OpenGL ES에서는 이러한 계산을 위한 텍스처 필터링 옵션을 제공합니다. 여러 가지 옵션이 있지만 대표적인 GL_NEAREST와 GL_LINEAR에 대해서 알아보겠습니다.
   - GL_NEAREST는 OpenGL ES의 기본 텍스처 필터링 방식입니다. OpenGL ES는 텍스처 좌표와 중심이 가장 가까운 텍셀을 선택하여 맵핑합니다.
-  ![GL_NEAREST](./images/filter_nearest.png)
+  
+    ![GL_NEAREST](./images/filter_nearest.png)
+
   - GL_LINEAR는 텍스처 좌표의 이웃 텍셀들을 보간한 값으로 맵핑합니다. 텍스처 좌표에서 텍셀의 중심까지의 거리가 가까울수록 해당 텍셀의 색상이 결과 색상에 더 많이 적용됩니다.
-  ![GL_LINEAR](./images/filter_linear.png)
+  
+    ![GL_LINEAR](./images/filter_linear.png)
+
   - 텍스처가 폴리곤 매시보다 작을 경우는 텍스처를 폴리곤 매시에 맞게 확대시킵니다. 이 경우 pname 파라미터에 GL_TEXTURE_MAG_FILTER를 지정합니다.
   - 텍스처가 폴리곤 매시보다 클 경우는 텍스처를 폴리곤 매시에 맞게 축소시킵니다. 이 경우 pname 파라미터에 GL_TEXTURE_MIN_FILTER를 지정합니다.
 
