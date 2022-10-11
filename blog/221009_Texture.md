@@ -88,13 +88,40 @@ OpenGL ES은 부동 소수점 값인 텍스처 좌표를 맵핑할 텍셀을 계
 
 ## 유니폼 변수 설정
 
+버텍스 버퍼를 할당하고 버텍스 셰이더에서 바로 사용할 수 없다는 사실을 이전 장에서 배웠습니다. 버텍스 셰이더가 버텍스 버퍼의 데이터에 접근하기 위해서는 [버텍스 어트리뷰트 배열을 정의](./220907_VertexBuffer.md#버텍스-셰이더에-버텍스-버퍼-전달)해주어야 했습니다. 텍스처도 마찬가지로 텍스처를 할당한 다음에 추가 작업을 수행해야 프레그먼트 셰이더에서 텍스처에 접근하여 사용할 수 있습니다.
+
+![fragment_shader](./images/fragment_shader.jpeg)
+
+### sampler
+sampler 내용 추가 
+
+### 텍스처 유닛
+텍스처 유닛 내용 추가
+
+![texture_units](./images/texture-units-and-objects.png)
+
+버텍스 버퍼를 설정할 때처럼 현재까지 텍스처에서 작업한 내용을 정리해보겠습니다.
+
+1. 텍스처 오브젝트를 생성했습니다.
+2. 텍스처 오브젝트를 컨텍스트에 바인딩했습니다.
+3. 바인딩된 텍스처 오브젝트에 텍스처를 할당하고 필터를 설정했습니다.
+  
+이제 텍스처를 프레그먼트 셰이더에서 사용하려면 두 단계가 더 필요합니다. 
+
+4. 프레그먼트 셰이더에는 텍스처에 접근하기 위해 uniform sampler2D 타입의 변수가 추가되었습니다. 이 변수와 텍스처 유닛을 연결해주어야 합니다.
+5. 텍스처 유닛을 활성화하고 활성화한 텍스처 유닛과 텍스처 오브젝트를 바인딩합니다.
+
 ```c
 GLint glGetUniformLocation(GLuint program, const GLchar *name);
 ```
 
+`glGetUniformLocation` 함수로 프레그먼트 셰이더에 추가된 uniform sampler2D 타입 변수의 로케이션을 구할 수 있습니다.
+
 ```c
 void glUniform1i(GLint location, GLint v0);
 ```
+
+그 다음 `glUniform1i` 함수를 호출하여 해당 로케이션의 유니폼 변수의 값을 지정합니다.
 
 ## 텍스처 활성화
 
@@ -102,18 +129,106 @@ void glUniform1i(GLint location, GLint v0);
 void glActiveTexture(GLenum texture);
 ```
 
+`glActiveTexture` 함수로 texture 파라미터의 텍스처 유닛을 활성화합니다.
+
 ## 텍스처 파괴
 
 ```c
 void glDeleteTextures(GLsizei n, const GLuint *textures);
 ```
 
+버퍼 오브젝트와 마찬가지로 렌더링을 수행한 후 프로그램을 종료할 때, 생성했던 텍스처를 파괴해줍니다. 
+
 ## 사각형 그리기
 
-## 결과
+[코드](https://github.com/GraphicsKorea/OpenGLES/blob/main/17.LearnTexture/src/main.cpp)
 
+```c
+// /17.LearnTexture/src/main.cpp
+
+...
+
+int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
+  ...
+
+  window.run([&app, &window] {
+
+    ...
+
+    // 텍스처 오브젝트 생성
+    GL_TEST(glGenTextures(1, &app.texture));
+    // 텍스처 오브젝트를 컨텍스트에 바인딩
+    GL_TEST(glBindTexture(GL_TEXTURE_2D, app.texture));
+    // 텍스처 이미지 배열 선언
+    constexpr std::array<GLubyte, 2 * 2 * 3> pixels = {
+      255,   0,   0,
+        0, 255,   0,
+        0,   0, 255,
+      255, 255, 255,
+    };
+    // 
+    GL_TEST(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+    // 텍스처 할당 및 저장
+    GL_TEST(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels.data()));
+    // 텍스처 필터 설정
+    GL_TEST(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+    GL_TEST(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+
+    app.program = create_graphics_pipeline({home() / "17.LearnTexture/res/triangle.vert",
+                                            home() / "17.LearnTexture/res/unlit.frag"});
+
+    // sampler 변수의 로케이션 반환
+    app.sampler_location = glGenUniformLocation(app.program, "sampler");
+  },
+  [] {},
+  [&app, &window] {
+
+    ...
+
+    // app.sampler_location이 가리키는 유니폼 변수의 값을 0으로 지정
+    GL_TEST(glUniform1i(app.sampler_location, 0));
+    // GL_TEXTURE0 텍스처 유닛 활성화
+    GL_TEST(glActiveTexture(GL_TEXTURE0));
+    // 텍스처 오브젝트 바인딩
+    GL_TEST(glBindTexture(GL_TEXTURE_2D, app.texture));
+
+    GL_TEST(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr));
+    GL_TEST(glBindVertexArray(0));
+    GL_TEST(glUseProgram(0));
+
+    EGL_TEST(eglSwapBuffers(app.display, app.surface));
+  },
+  [&app] {
+    GL_TEST(glDeleteProgram(app.program));
+    app.program = 0;
+
+    // 텍스처 오브젝트 파괴
+    GL_TEST(glDeleteTextures(1, &app.texture));
+    app.texture = 0;
+
+    GL_TEST(glDeleteVertexArrays(1, &app.vertex_array));
+    app.vertex_array = 0;
+
+    GL_TEST(glDeleteBuffers(1, &app.vertex_buffer));
+    app.vertex_buffer = 0;
+
+    GL_TEST(glDeleteBuffers(1, &app.index_buffer));
+    app.index_buffer = 0;
+
+    shutdown(app);
+  });
+
+  return 0;
+}
+
+```
+
+## 결과
+![result](./images/Screen%20Shot%202022-10-11%20at%204.48.13%20PM.png)
 ## 참고
 
 - [OpenGLES - GraphicsKorea](https://github.com/GraphicsKorea/OpenGLES)
 - [Texture - OpenGL Wiki](https://www.khronos.org/opengl/wiki/Texture)
 - [Textures - Learn OpenGL](https://learnopengl.com/Getting-started/Textures)
+- [Introduction to OpenGL ES 3.0](https://www.informit.com/articles/article.aspx?p=2181697)
+- [Image Textures - Introduction to Computer Graphics](https://math.hws.edu/graphicsbook/c6/s4.html)
