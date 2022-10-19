@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 18:24:49 by sejpark           #+#    #+#             */
-/*   Updated: 2022/09/05 19:54:29 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/19 19:33:51 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 #include <Base/utility.h>
 #include <Base/Shader.h>
 #include <Base/Model.h>
+#include <Base/GeometricShapes/Sphere.h>
 
 struct App {
     EGLDisplay display{EGL_NO_DISPLAY};
@@ -40,6 +41,7 @@ struct App {
     GLint view_location{0};
     GLint projection_location{0};
     Model *model{nullptr};
+    Sphere *sphere{nullptr};
     ImGuiContext *imguiContext{nullptr};
 };
 
@@ -63,7 +65,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             Shader shader({home() / "SCOP/res/triangle.vert",
                            home() / "SCOP/res/unlit.frag"});
             app.program = shader.getProgramId();
-            app.model = new Model(home() / "SCOP/res/objects/teapot.obj");
+            //app.model = new Model(home() / "SCOP/res/objects/teapot.obj");
+            app.sphere = new Sphere();
        },
        [] {},
        [&app, &window] {
@@ -99,7 +102,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            app.model_location = glGetUniformLocation(app.program, "model");
            GL_TEST(glUniformMatrix4fv(app.model_location, 1, GL_FALSE, &model[0][0]));
             
-           app.model->Draw(app.program);
+           //app.model->Draw(app.program);
+           app.sphere->draw();
 
            GL_TEST(glBindVertexArray(0));
            GL_TEST(glUseProgram(0));
@@ -113,8 +117,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            GL_TEST(glDeleteProgram(app.program));
            app.program = 0;
 
-           app.model->clearModel();
-           delete app.model;
+           //app.model->clearModel();
+           //delete app.model;
+           delete app.sphere;
            shutdown(app);
        });
 

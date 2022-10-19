@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Sphere.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejpark <sejpark@student.42seoul.k>        +#+  +:+       +#+        */
+/*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:35:45 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/14 19:00:24 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/19 19:36:18 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Base/GeometricSphapes/Sphere.h"
+#include "Base/GeometricShapes/Sphere.h"
 #include <cmath>
 
 Sphere::Sphere(float radius, int sectorCount, int stackCount, bool smooth)
@@ -21,13 +21,41 @@ Sphere::Sphere(float radius, int sectorCount, int stackCount, bool smooth)
       interleavedVertices_(32) {
     if (smooth_)
         buildVerticesSmooth();
-    else
-        buildVerticesFlat();
+//    else
+//        buildVerticesFlat();
+
+    GL_TEST(glGenBuffers(1, &vertex_buffer_));
+    GL_TEST(glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_));
+    GL_TEST(glBufferData(GL_ARRAY_BUFFER, this->getInterleavedVertexSize(), this->getInterleavedVertices(), GL_STATIC_DRAW));
+    GL_TEST(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+    GL_TEST(glGenBuffers(1, &index_buffer_));
+    GL_TEST(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_));
+    GL_TEST(glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->getIndexSize(), this->getIndices(), GL_STATIC_DRAW));
+    GL_TEST(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
+    GL_TEST(glGenVertexArrays(1, &vertex_array_));
+    GL_TEST(glBindVertexArray(vertex_array_));
+    GL_TEST(glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_));
+    GL_TEST(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_));
+    GL_TEST(glEnableVertexAttribArray(0));
+    GL_TEST(glEnableVertexAttribArray(1));
+    GL_TEST(glEnableVertexAttribArray(2));
+
+    int stride = this->getInterleavedStride();
+    GL_TEST(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0));
+    GL_TEST(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof(float) * 3)));
+    GL_TEST(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(sizeof(float) * 6)));
+    GL_TEST(glBindVertexArray(0));
 }
 
 Sphere::~Sphere() {}
 
 void Sphere::draw() const {
+    GL_TEST(glBindVertexArray(vertex_array_));
+    GL_TEST(glDrawElements(GL_TRIANGLES, this->getIndexCount(), GL_UNSIGNED_INT, 0));
+
+    GL_TEST(glBindVertexArray(0));
 }
 
 void Sphere::buildVerticesSmooth() {

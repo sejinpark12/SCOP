@@ -15,19 +15,24 @@ add_library(Base
     include/Base/Shader.h
     include/Base/Mesh.h
     include/Base/Model.h
+    include/Base/GeometricShapes/Sphere.h
     src/Window.cpp
     src/utility.cpp
     src/camera.cpp
     src/input.cpp
     src/Shader.cpp
     src/Mesh.cpp
-    src/Model.cpp)
+    src/Model.cpp
+    src/GeometricShapes/Sphere.cpp)
 
 target_include_directories(Base
     PUBLIC include)
 
 target_compile_features(Base
     PUBLIC cxx_std_17)
+
+target_compile_options(Base
+    PUBLIC -g)
 
 target_compile_definitions(Base
     PUBLIC HOME_PATH="${CMAKE_HOME_DIRECTORY}")

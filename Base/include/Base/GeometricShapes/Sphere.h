@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   Sphere.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejpark <sejpark@student.42seoul.k>        +#+  +:+       +#+        */
+/*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:25:28 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/14 18:47:43 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/19 19:24:09 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SPHERE_H
 #define SPHERE_H
 
+#include <GLES3/gl3.h>
+#include <Base/utility.h>
 #include <vector>
 
 class Sphere {
@@ -30,11 +32,35 @@ private:
     std::vector<float> interleavedVertices_;
     int interleavedStride_;
 
+    GLuint vertex_array_;
+    GLuint vertex_buffer_;
+    GLuint index_buffer_;
+
 public:
     explicit Sphere(float radius = 1.0f, int sectorCount = 36, int stackCount = 18,
             bool smooth = true);
     
     ~Sphere();
+
+    unsigned int getIndexCount() const {
+        return (unsigned int)indices_.size();
+    }
+    unsigned int getIndexSize() const {
+        return (unsigned int)indices_.size() * sizeof(unsigned int);
+    }
+    const unsigned int *getIndices() const {
+        return indices_.data();
+    }
+
+    unsigned int getInterleavedVertexSize() const {
+        return (unsigned int)interleavedVertices_.size() * sizeof(float);
+    }
+    const float *getInterleavedVertices() const {
+        return interleavedVertices_.data();
+    }
+    int getInterleavedStride() const {
+        return interleavedStride_;
+    }
 
     void draw() const;
 
