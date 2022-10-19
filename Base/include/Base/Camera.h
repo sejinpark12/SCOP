@@ -5,14 +5,10 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/31 16:43:56 by sejpark           #+#    #+#             */
-/*   Updated: 2022/09/06 19:09:01 by sejpark          ###   ########.fr       */
+/*   Created: 2021/12/29 16:43:56 by sejpark           #+#    #+#             */
+/*   Updated: 2022/10/20 00:06:47 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-//
-// Created by Sejin Park on 2021/12/29.
-//
 
 #ifndef CAMERA_H
 #define CAMERA_H
