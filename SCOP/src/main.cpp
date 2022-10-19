@@ -1,17 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/22 18:24:49 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/19 19:33:51 by sejpark          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 //
 // Created by Daemyung Jang on 2021/10/19.
+// Updated by Sejin Park on 2022/10/19.
 //
 
 #include <__nullptr>
@@ -67,6 +56,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             app.program = shader.getProgramId();
             //app.model = new Model(home() / "SCOP/res/objects/teapot.obj");
             app.sphere = new Sphere();
+            //app.sphere = new Sphere(1, 36, 18, false);
        },
        [] {},
        [&app, &window] {

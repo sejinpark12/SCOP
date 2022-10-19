@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:25:28 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/19 19:24:09 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/20 01:04:06 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,16 @@ public:
 
 private:
     void buildVerticesSmooth();
+	void buildVerticesFlat();
     void buildInterleavedVertices();
     void clearArrays();
     void addVertex(float x, float y, float z);
     void addNormal(float nx, float ny, float nz);
     void addTexCoord(float s, float t);
     void addIndices(unsigned int i1, unsigned int i2, unsigned int i3);
+	std::vector<float> computeFaceNormal(float x1, float y1, float z1,
+										 float x2, float y2, float z2,
+										 float x3, float y3, float z3);
 
 };
 
