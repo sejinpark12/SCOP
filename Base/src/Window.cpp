@@ -62,16 +62,18 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        const Uint8 *state = SDL_GetKeyboardState(nullptr);
-        input_.processKeyboard(state, deltaTime, camera_);
+        if (!ImGui::GetIO().WantCaptureMouse) {
+            const Uint8 *state = SDL_GetKeyboardState(nullptr);
+            input_.processKeyboard(state, deltaTime, camera_);
 
-        if (firstMouse) {
-            glm::ivec2 size = this->size();
-            SDL_WarpMouseInWindow(window_, size.x / 2, size.y / 2);
-            firstMouse = false;
+            if (firstMouse) {
+                glm::ivec2 size = this->size();
+                SDL_WarpMouseInWindow(window_, size.x / 2, size.y / 2);
+                firstMouse = false;
+            }
+            Uint32 mouseBtns = SDL_GetMouseState(&xpos, &ypos);
+            input_.processMouse(mouseBtns, xpos, ypos, camera_);
         }
-        Uint32 mouseBtns = SDL_GetMouseState(&xpos, &ypos);
-        input_.processMouse(mouseBtns, xpos, ypos, camera_);
 
         camera_.updateCameraVectors();	
 
