@@ -40,6 +40,11 @@ const unsigned int SCR_HEIGHT = 720;
 const float fov = 45.0f;
 
 glm::vec4 backGroundColor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
+glm::vec4 diffuse = glm::vec4(0.3f, 0.2f, 0.4f, 0.0f);
+float ambient = 0.25f;
+float shininess = 60.0f;
+glm::vec4 specular = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+glm::vec4 lightDir = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
     App app{};
@@ -51,8 +56,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 
 
             GL_TEST(glEnable(GL_DEPTH_TEST));
-            Shader shader({home() / "SCOP/res/triangle.vert",
-                           home() / "SCOP/res/unlit.frag"});
+//            Shader shader({home() / "SCOP/res/triangle.vert",
+//                           home() / "SCOP/res/unlit.frag"});
+            Shader shader({home() / "SCOP/res/gouraud.vert",
+                           home() / "SCOP/res/gouraud.frag"});
             app.program = shader.getProgramId();
             //app.model = new Model(home() / "SCOP/res/objects/teapot.obj");
             app.sphere = new Sphere();
@@ -64,9 +71,19 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
                 ImGui::Text("This is first text...");
            }
            ImGui::End();
-
            if (ImGui::Begin("ui window")) {
                 ImGui::ColorEdit4("clear color", glm::value_ptr(backGroundColor));
+           }
+           ImGui::End();
+           if (ImGui::Begin("light window")) {
+                ImGui::ColorEdit4("light direction", glm::value_ptr(lightDir));
+           }
+           ImGui::End();
+           if (ImGui::Begin("sphere window")) {
+                ImGui::ColorEdit4("diffuse color", glm::value_ptr(diffuse));
+                ImGui::SliderFloat("ambient", &ambient, 0.0f, 1.0f);
+                ImGui::SliderFloat("shininess", &shininess, 0.0f, 128.0f);
+                ImGui::ColorEdit4("specular color", glm::value_ptr(specular));
            }
            ImGui::End();
 
@@ -91,9 +108,30 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            model = glm::translate(model, glm::vec3(0.0f, 0.0f, -5.0f));
            app.model_location = glGetUniformLocation(app.program, "model");
            GL_TEST(glUniformMatrix4fv(app.model_location, 1, GL_FALSE, &model[0][0]));
+
+           GLint lightDir_location{0};
+           glm::vec4 lightDirection = glm::normalize(view * lightDir);
+           lightDir_location = glGetUniformLocation(app.program, "l_dir");
+           GL_TEST(glUniform4fv(lightDir_location, 1, glm::value_ptr(lightDirection)));
+
+           GLint diffuse_location{0};
+           diffuse_location = glGetUniformLocation(app.program, "diffuse");
+           GL_TEST(glUniform4fv(diffuse_location, 1, glm::value_ptr(diffuse)));
+
+           GLint ambient_location{0};
+           ambient_location = glGetUniformLocation(app.program, "ambient");
+           GL_TEST(glUniform1fv(ambient_location, 1, &ambient));
+
+           GLint shininess_location{0};
+           shininess_location = glGetUniformLocation(app.program, "shininess");
+           GL_TEST(glUniform1fv(shininess_location, 1, &shininess));
+
+           GLint specular_location{0};
+           specular_location = glGetUniformLocation(app.program, "specular");
+           GL_TEST(glUniform4fv(specular_location, 1, glm::value_ptr(specular)));
             
            //app.model->Draw(app.program);
-           app.sphere->draw();
+           app.sphere->draw(app.program);
 
            GL_TEST(glBindVertexArray(0));
            GL_TEST(glUseProgram(0));

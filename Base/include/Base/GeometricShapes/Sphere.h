@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:25:28 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/20 01:04:06 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/20 17:08:57 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ public:
         return interleavedStride_;
     }
 
-    void draw() const;
+    void draw(GLuint programId) const;
 
 private:
     void buildVerticesSmooth();

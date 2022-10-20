@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:35:45 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/20 01:04:18 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/20 18:00:58 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ Sphere::Sphere(float radius, int sectorCount, int stackCount, bool smooth)
 
 Sphere::~Sphere() {}
 
-void Sphere::draw() const {
+void Sphere::draw(GLuint programId) const {
     GL_TEST(glBindVertexArray(vertex_array_));
     GL_TEST(glDrawElements(GL_TRIANGLES, this->getIndexCount(), GL_UNSIGNED_INT, 0));
 
