@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:35:45 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/20 18:00:58 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/21 20:03:00 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,25 @@ Sphere::Sphere(float radius, int sectorCount, int stackCount, bool smooth)
       stackCount_(stackCount),
       smooth_(smooth),
       interleavedStride_(32) {
+    // smooth shading, flat shading 선택
     if (smooth_)
         buildVerticesSmooth();
     else
         buildVerticesFlat();
 
+    // 버텍스 버퍼 설정
     GL_TEST(glGenBuffers(1, &vertex_buffer_));
     GL_TEST(glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_));
     GL_TEST(glBufferData(GL_ARRAY_BUFFER, this->getInterleavedVertexSize(), this->getInterleavedVertices(), GL_STATIC_DRAW));
     GL_TEST(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
+    // 인덱스 버퍼 설정
     GL_TEST(glGenBuffers(1, &index_buffer_));
     GL_TEST(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_));
     GL_TEST(glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->getIndexSize(), this->getIndices(), GL_STATIC_DRAW));
     GL_TEST(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
+    // 버텍스 어레이 설정
     GL_TEST(glGenVertexArrays(1, &vertex_array_));
     GL_TEST(glBindVertexArray(vertex_array_));
     GL_TEST(glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_));
@@ -58,65 +62,78 @@ void Sphere::draw(GLuint programId) const {
     GL_TEST(glBindVertexArray(0));
 }
 
+// 자세한 설명은 http://www.songho.ca/opengl/gl_sphere.html 를 참고
 void Sphere::buildVerticesSmooth() {
+    // 아크코사인으로 원주율을 구합니다.
     const float PI = acos(-1);
 
+    // 배열의 메모리 초기화합니다.
     clearArrays();
 
-    float x, y, z, xy;
-    float nx, ny, nz, lengthInv = 1.0f / radius_;
-    float s, t;
-
+    float x, y, z, xy;                                  // vertex position
+    float nx, ny, nz, lengthInv = 1.0f / radius_;       // normal
+    float s, t;                                         // texCoord
+                                                        
+    // 360도(2PI)를 sectorCount_로 나눠서 sectorStep 1개의 각도를 구합니다.
     float sectorStep = 2 * PI / sectorCount_;
+    // 180도(PI)를 stackCount_로 나눠서 stackStep 1개의 각도를 구합니다.
     float stackStep = PI / stackCount_;
     float sectorAngle, stackAngle;
 
+    // -90 <= stackAngle <= 90 범위에서 구 버텍스의 z좌표를 구합니다.
     for (int i = 0; i <= stackCount_; i++) {
         stackAngle = PI / 2 - i * stackStep;
 
-        xy = radius_ * cosf(stackAngle);
+        // 구의 stackAngle 상의 점에서 xy평면으로 투영한 값입니다.
+        xy = radius_ * cosf(stackAngle);                
+        // 구의 stackAngle 상의 점의 z좌표입니다.
         z = radius_ * sinf(stackAngle);
 
+        // 0 <= sectorAngle <= 360 범위에서 구 버텍스의 x, y 좌표를 구합니다.
         for (int j = 0; j <= sectorCount_; j++) {
             sectorAngle = j * sectorStep;
 
+            // 구의 stackAngle, sectorAngle 상의 x좌표입니다.
             x = xy * cosf(sectorAngle);
+            // 구의 stackAngle, sectorAngle 상의 y좌표입니다.
             y = xy * sinf(sectorAngle);
+            // 버텍스 좌표를 추가합니다.
             addVertex(x, y, z);
 
+            // 버텍스 좌표를 정규화하여 법선 벡터를 구합니다.
             nx = x * lengthInv;
             ny = y * lengthInv;
             nz = z * lengthInv;
+            // 버텍스의 법선 벡터 좌표를 추가합니다.
             addNormal(nx, ny, nz);
 
             s = (float)j / sectorCount_;
             t = (float)i / stackCount_;
+            // 텍스처 좌표를 추가합니다.
             addTexCoord(s, t);
         }
     }
 
-    unsigned int k1, k2;
+    // 인덱스의 구성
+    // k1--k1+1
+    // |  / |
+    // | /  |
+    // k2--k2+1
+    unsigned int k1, k2;   // 삼각형을 구성하는 버텍스의 인덱스를 담는 변수
 
     for (int i = 0; i < stackCount_; i++) {
         k1 = i * (sectorCount_ + 1);
         k2 = k1 + sectorCount_ + 1;
 
         for (int j = 0; j < sectorCount_; j++, k1++, k2++) {
+            // 첫 번째 stack 의 sector들은 삼각형이 1개이므로 
             if (i != 0)
                 addIndices(k1, k2, k1 + 1);
+            // 마지막 stack 의 sector들은 삼각형이 1개이므로
             if (i != (stackCount_ - 1))
                 addIndices(k1 + 1, k2, k2 + 1);
-
-            lineIndices_.push_back(k1);
-            lineIndices_.push_back(k2);
-
-            if (i != 0) {
-                lineIndices_.push_back(k1);
-                lineIndices_.push_back(k1 + 1);
-            }
         }
     }
-
     buildInterleavedVertices();
 }
 
@@ -184,9 +201,6 @@ void Sphere::buildVerticesFlat() {
 				
 				addIndices(index, index + 1, index + 2);
 
-				lineIndices_.push_back(index);
-				lineIndices_.push_back(index + 1);
-
 				index += 3;
 			}
 			else if (i == (stackCount_ - 1)) {
@@ -205,11 +219,6 @@ void Sphere::buildVerticesFlat() {
 				}
 
 				addIndices(index, index + 1, index + 2);
-
-				lineIndices_.push_back(index);
-				lineIndices_.push_back(index + 1);
-				lineIndices_.push_back(index);
-				lineIndices_.push_back(index + 2);
 
 				index += 3;
 			}
@@ -233,25 +242,23 @@ void Sphere::buildVerticesFlat() {
 				addIndices(index, index + 1, index + 2);
 				addIndices(index + 2, index + 1, index + 3);
 
-				lineIndices_.push_back(index);
-				lineIndices_.push_back(index + 1);
-				lineIndices_.push_back(index);
-				lineIndices_.push_back(index + 2);
-
 				index += 4;
 			}
 		}
 	}
-
+    // interleavedVertices_에 버텍스 속성들을 일렬로 추가합니다.
 	buildInterleavedVertices();
 }
 
 void Sphere::buildInterleavedVertices() {
+    // interleavedVertices_ 의 메모리를 초기화합니다.
     std::vector<float>().swap(interleavedVertices_);
 
     std::size_t i, j;
     std::size_t count = vertices_.size();
 
+    // interleavedVertices_ 맴버변수에 버텍스 좌표, 법선벡터, 텍스처 좌표 순으로
+    // 추가합니다.
     for (int i = 0, j = 0; i < count; i += 3, j += 2) {
         interleavedVertices_.push_back(vertices_[i]);
         interleavedVertices_.push_back(vertices_[i + 1]);
@@ -261,8 +268,8 @@ void Sphere::buildInterleavedVertices() {
         interleavedVertices_.push_back(normals_[i + 1]);
         interleavedVertices_.push_back(normals_[i + 2]);
 
-        interleavedVertices_.push_back(texCoords_[i]);
-        interleavedVertices_.push_back(texCoords_[i + 1]);
+        interleavedVertices_.push_back(texCoords_[j]);
+        interleavedVertices_.push_back(texCoords_[j + 1]);
     }
 }
 
@@ -271,7 +278,6 @@ void Sphere::clearArrays() {
     std::vector<float>().swap(normals_);
     std::vector<float>().swap(texCoords_);
     std::vector<unsigned int>().swap(indices_);
-    std::vector<unsigned int>().swap(lineIndices_);
 }
 
 void Sphere::addVertex(float x, float y, float z) {

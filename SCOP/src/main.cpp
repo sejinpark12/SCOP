@@ -45,6 +45,7 @@ float ambient = 0.25f;
 float shininess = 60.0f;
 glm::vec4 specular = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 glm::vec4 lightDir = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+glm::vec4 lightPos = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
     App app{};
@@ -60,8 +61,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 //                           home() / "SCOP/res/unlit.frag"});
 //            Shader shader({home() / "SCOP/res/gouraud.vert",
 //                           home() / "SCOP/res/gouraud.frag"});
-            Shader shader({home() / "SCOP/res/phong.vert",
-                           home() / "SCOP/res/phong.frag"});
+//            Shader shader({home() / "SCOP/res/phong.vert",
+//                           home() / "SCOP/res/phong.frag"});
+            Shader shader({home() / "SCOP/res/pointlight.vert",
+                           home() / "SCOP/res/pointlight.frag"});
             app.program = shader.getProgramId();
             //app.model = new Model(home() / "SCOP/res/objects/teapot.obj");
             app.sphere = new Sphere();
@@ -79,6 +82,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            ImGui::End();
            if (ImGui::Begin("light window")) {
                 ImGui::ColorEdit4("light direction", glm::value_ptr(lightDir));
+                ImGui::ColorEdit4("light position", glm::value_ptr(lightPos));
            }
            ImGui::End();
            if (ImGui::Begin("sphere window")) {
@@ -111,10 +115,15 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            app.model_location = glGetUniformLocation(app.program, "model");
            GL_TEST(glUniformMatrix4fv(app.model_location, 1, GL_FALSE, &model[0][0]));
 
-           GLint lightDir_location{0};
-           glm::vec4 lightDirection = glm::normalize(view * lightDir);
-           lightDir_location = glGetUniformLocation(app.program, "l_dir");
-           GL_TEST(glUniform4fv(lightDir_location, 1, glm::value_ptr(lightDirection)));
+//           GLint lightDir_location{0};
+//           glm::vec4 lightDirection = glm::normalize(view * lightDir);
+//           lightDir_location = glGetUniformLocation(app.program, "l_dir");
+//           GL_TEST(glUniform4fv(lightDir_location, 1, glm::value_ptr(lightDirection)));
+
+           GLint lightPos_location{0};
+           glm::vec4 lightPosition = glm::normalize(view * lightPos);
+           lightPos_location = glGetUniformLocation(app.program, "l_pos");
+           GL_TEST(glUniform4fv(lightPos_location, 1, glm::value_ptr(lightPosition)));
 
            GLint diffuse_location{0};
            diffuse_location = glGetUniformLocation(app.program, "diffuse");
