@@ -58,8 +58,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             GL_TEST(glEnable(GL_DEPTH_TEST));
 //            Shader shader({home() / "SCOP/res/triangle.vert",
 //                           home() / "SCOP/res/unlit.frag"});
-            Shader shader({home() / "SCOP/res/gouraud.vert",
-                           home() / "SCOP/res/gouraud.frag"});
+//            Shader shader({home() / "SCOP/res/gouraud.vert",
+//                           home() / "SCOP/res/gouraud.frag"});
+            Shader shader({home() / "SCOP/res/phong.vert",
+                           home() / "SCOP/res/phong.frag"});
             app.program = shader.getProgramId();
             //app.model = new Model(home() / "SCOP/res/objects/teapot.obj");
             app.sphere = new Sphere();
