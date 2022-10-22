@@ -45,7 +45,9 @@ float ambient = 0.25f;
 float shininess = 60.0f;
 glm::vec4 specular = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 glm::vec4 lightDir = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
-glm::vec4 lightPos = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+glm::vec4 lightPos = glm::vec4(10.0f, 0.0f, 0.0f, 1.0f);
+glm::vec4 spotDir = glm::vec4(-1.0f, -1.0f, -1.0f, 0.0f);
+float spotCutOff = 0.25f;
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
     App app{};
@@ -61,14 +63,17 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 //                           home() / "SCOP/res/unlit.frag"});
 //            Shader shader({home() / "SCOP/res/gouraud.vert",
 //                           home() / "SCOP/res/gouraud.frag"});
-//            Shader shader({home() / "SCOP/res/phong.vert",
-//                           home() / "SCOP/res/phong.frag"});
-            Shader shader({home() / "SCOP/res/pointlight.vert",
-                           home() / "SCOP/res/pointlight.frag"});
+//            Shader shader({home() / "SCOP/res/directionlight/phong.vert",
+//                           home() / "SCOP/res/directionlight/phong.frag"});
+//            Shader shader({home() / "SCOP/res/pointlight.vert",
+//                           home() / "SCOP/res/pointlight.frag"});
+            Shader shader({home() / "SCOP/res/spotlight/spotlight.vert",
+                           home() / "SCOP/res/spotlight/spotlight.frag"});
             app.program = shader.getProgramId();
             //app.model = new Model(home() / "SCOP/res/objects/teapot.obj");
             app.sphere = new Sphere();
             //app.sphere = new Sphere(1, 36, 18, false);
+           GL_TEST(glClearColor(backGroundColor.r, backGroundColor.g, backGroundColor.b, backGroundColor.a));
        },
        [] {},
        [&app, &window] {
@@ -81,8 +86,12 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            }
            ImGui::End();
            if (ImGui::Begin("light window")) {
-                ImGui::ColorEdit4("light direction", glm::value_ptr(lightDir));
-                ImGui::ColorEdit4("light position", glm::value_ptr(lightPos));
+                ImGui::DragFloat3("Light Direction", glm::value_ptr(lightDir));
+                //ImGui::ColorEdit4("light direction", glm::value_ptr(lightDir));
+                ImGui::DragFloat3("Light Position", glm::value_ptr(lightPos));
+                //ImGui::ColorEdit4("light position", glm::value_ptr(lightPos));
+                ImGui::SliderFloat("Spotlight Cutoff", &spotCutOff, 0.0f, 1.0f);
+                ImGui::DragFloat3("Spotlight Direction", glm::value_ptr(spotDir));
            }
            ImGui::End();
            if (ImGui::Begin("sphere window")) {
@@ -111,19 +120,28 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            app.view_location = glGetUniformLocation(app.program, "view");
            GL_TEST(glUniformMatrix4fv(app.view_location, 1, GL_FALSE, &view[0][0]));
            glm::mat4 model = glm::mat4(1.0f);
-           model = glm::translate(model, glm::vec3(0.0f, 0.0f, -5.0f));
+           model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
            app.model_location = glGetUniformLocation(app.program, "model");
            GL_TEST(glUniformMatrix4fv(app.model_location, 1, GL_FALSE, &model[0][0]));
 
-//           GLint lightDir_location{0};
-//           glm::vec4 lightDirection = glm::normalize(view * lightDir);
-//           lightDir_location = glGetUniformLocation(app.program, "l_dir");
-//           GL_TEST(glUniform4fv(lightDir_location, 1, glm::value_ptr(lightDirection)));
+           GLint lightDir_location{0};
+           glm::vec4 lightDirection = glm::normalize(view * lightDir);
+           lightDir_location = glGetUniformLocation(app.program, "l_dir");
+           GL_TEST(glUniform4fv(lightDir_location, 1, glm::value_ptr(lightDirection)));
 
            GLint lightPos_location{0};
-           glm::vec4 lightPosition = glm::normalize(view * lightPos);
+           glm::vec4 lightPosition = view * lightPos;
            lightPos_location = glGetUniformLocation(app.program, "l_pos");
            GL_TEST(glUniform4fv(lightPos_location, 1, glm::value_ptr(lightPosition)));
+
+           GLint spotDir_location{0};
+           glm::vec4 spotDirction = view * spotDir;
+           spotDir_location = glGetUniformLocation(app.program, "l_spotDir");
+           GL_TEST(glUniform4fv(spotDir_location, 1, glm::value_ptr(spotDirction)));
+
+           GLint spotCutOff_location{0};
+           spotCutOff_location = glGetUniformLocation(app.program, "l_spotCutOff");
+           GL_TEST(glUniform1fv(spotCutOff_location, 1, &spotCutOff));
 
            GLint diffuse_location{0};
            diffuse_location = glGetUniformLocation(app.program, "diffuse");

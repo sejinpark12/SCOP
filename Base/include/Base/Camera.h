@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 16:43:56 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/20 00:06:47 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/22 15:39:52 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ public:
     /// \param front 생성할 카메라의 front 벡터입니다.
     /// \param up 생성할 카메라의 up 벡터입니다.
     explicit Camera(
-        const glm::vec3 &position = glm::vec3(0.0f, 0.0f, 0.0f),
-        const glm::vec3 &front = glm::vec3(0.0f, 0.0f, -1.0f),
+        const glm::vec3 &position = glm::vec3(0.0f, 0.0f, 5.0f),
+        const glm::vec3 &front = glm::vec3(0.0f, 0.0f, 0.0f),
         const glm::vec3 &up = glm::vec3(0.0f, 1.0f, 0.0f));
 
     /// 소멸자.

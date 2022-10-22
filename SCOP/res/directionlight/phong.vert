@@ -11,9 +11,9 @@ out vec4 eye;
 out vec3 normal;
 
 void main() {
-    normal = vec3(normalize(view * model * vec4(attr_normal, 0.0)));
+    normal = normalize(vec3(view * model * vec4(attr_normal, 0.0)));
     vec4 pos = view * model * vec4(attr_position, 1.0);
-    eye = normalize(-pos);
+    eye = -pos;
 
     gl_Position = projection * view * model * vec4(attr_position, 1.0);
 }
