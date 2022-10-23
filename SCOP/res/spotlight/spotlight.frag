@@ -5,6 +5,7 @@ uniform vec4 diffuse;
 uniform float ambient;
 uniform vec4 specular;
 uniform float shininess;
+uniform mat4 view;
 
 uniform vec4 l_pos, l_spotDir;
 uniform float l_spotCutOff;
@@ -20,9 +21,9 @@ void main() {
     vec4 spec = vec4(0.0);
 
     vec3 ld = normalize(lightDir);
-    vec3 sd = normalize(vec3(-l_spotDir));
+    vec3 sd = normalize(vec3(l_spotDir));
 
-    if (dot(sd, ld) > l_spotCutOff) {
+    if (dot(sd, normalize(-lightDir)) > l_spotCutOff) {
         vec3 n = normalize(normal);
         intensity = max(dot(n, ld), 0.0);
 
@@ -31,9 +32,7 @@ void main() {
             vec3 h = normalize(ld + e);
             float intSpec = max(dot(h, n), 0.0);
             spec = specular * pow(intSpec, shininess);
-
         }
-
     }
     outputF = max(intensity * diffuse + spec, ambient * diffuse);
 }

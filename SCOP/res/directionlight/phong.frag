@@ -17,11 +17,12 @@ void main() {
 
     vec3 n = normalize(normal);
     vec3 e = normalize(vec3(eye));
+    vec3 light_dir = vec3(l_dir);
 
-    float intensity = max(dot(n, vec3(l_dir)), 0.0);
+    float intensity = max(dot(n, light_dir), 0.0);
 
     if (intensity > 0.0) {
-        vec3 h = normalize(vec3(l_dir) + e);
+        vec3 h = normalize(light_dir + e);
         float intSpec = max(dot(h, n), 0.0);
         spec = specular * pow(intSpec, shininess);
     }

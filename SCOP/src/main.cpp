@@ -47,7 +47,7 @@ glm::vec4 specular = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 glm::vec4 lightDir = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 glm::vec4 lightPos = glm::vec4(10.0f, 0.0f, 0.0f, 1.0f);
 glm::vec4 spotDir = glm::vec4(-1.0f, -1.0f, -1.0f, 0.0f);
-float spotCutOff = 0.25f;
+float spotCutOff = glm::cos(glm::radians(3.0f));
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
     App app{};
@@ -61,12 +61,12 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             GL_TEST(glEnable(GL_DEPTH_TEST));
 //            Shader shader({home() / "SCOP/res/triangle.vert",
 //                           home() / "SCOP/res/unlit.frag"});
-//            Shader shader({home() / "SCOP/res/gouraud.vert",
-//                           home() / "SCOP/res/gouraud.frag"});
+//            Shader shader({home() / "SCOP/res/directionlight/gouraud.vert",
+//                           home() / "SCOP/res/directionlight/gouraud.frag"});
 //            Shader shader({home() / "SCOP/res/directionlight/phong.vert",
 //                           home() / "SCOP/res/directionlight/phong.frag"});
-//            Shader shader({home() / "SCOP/res/pointlight.vert",
-//                           home() / "SCOP/res/pointlight.frag"});
+//            Shader shader({home() / "SCOP/res/pointlight/pointlight.vert",
+//                           home() / "SCOP/res/pointlight/pointlight.frag"});
             Shader shader({home() / "SCOP/res/spotlight/spotlight.vert",
                            home() / "SCOP/res/spotlight/spotlight.frag"});
             app.program = shader.getProgramId();
@@ -90,7 +90,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
                 //ImGui::ColorEdit4("light direction", glm::value_ptr(lightDir));
                 ImGui::DragFloat3("Light Position", glm::value_ptr(lightPos));
                 //ImGui::ColorEdit4("light position", glm::value_ptr(lightPos));
-                ImGui::SliderFloat("Spotlight Cutoff", &spotCutOff, 0.0f, 1.0f);
+                ImGui::SliderFloat("Spotlight Cutoff", &spotCutOff, -1.0f, 10.0f);
                 ImGui::DragFloat3("Spotlight Direction", glm::value_ptr(spotDir));
            }
            ImGui::End();
@@ -125,19 +125,25 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            GL_TEST(glUniformMatrix4fv(app.model_location, 1, GL_FALSE, &model[0][0]));
 
            GLint lightDir_location{0};
-           glm::vec4 lightDirection = glm::normalize(view * lightDir);
+           glm::vec4 lightDirection = glm::normalize(lightDir);
            lightDir_location = glGetUniformLocation(app.program, "l_dir");
            GL_TEST(glUniform4fv(lightDir_location, 1, glm::value_ptr(lightDirection)));
 
            GLint lightPos_location{0};
-           glm::vec4 lightPosition = view * lightPos;
+           glm::vec4 lightPosition = lightPos;
            lightPos_location = glGetUniformLocation(app.program, "l_pos");
            GL_TEST(glUniform4fv(lightPos_location, 1, glm::value_ptr(lightPosition)));
 
+           GLint camPos_location{0};
+           glm::vec4 camPosition = glm::vec4(window.get_camera().getPosition(), 1.0);
+           camPos_location = glGetUniformLocation(app.program, "campos");
+           GL_TEST(glUniform4fv(camPos_location, 1, glm::value_ptr(camPosition)));
+
            GLint spotDir_location{0};
-           glm::vec4 spotDirction = view * spotDir;
+           glm::vec4 spotDirection = spotDir;
            spotDir_location = glGetUniformLocation(app.program, "l_spotDir");
-           GL_TEST(glUniform4fv(spotDir_location, 1, glm::value_ptr(spotDirction)));
+           GL_TEST(glUniform4fv(spotDir_location, 1, glm::value_ptr(spotDirection)));
+//           SPDLOG_INFO("spotDirection: {}, {}, {}, {}", spotDirection.x, spotDirection.y, spotDirection.z, spotDirection.w);
 
            GLint spotCutOff_location{0};
            spotCutOff_location = glGetUniformLocation(app.program, "l_spotCutOff");
