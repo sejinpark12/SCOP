@@ -4,7 +4,7 @@
 - 블렌더와 같은 모델링 프로그램에서 제작된 3D 오브젝트를 임포트해서 보여주는 프로그램
 
 ### 사용 라이브러리
-- OpenGL ES 3.0, EGL 1.5, SDL2, GLM
+- OpenGL ES 3.0, EGL 1.5, SDL2, GLM, Assimp, ImGui
 
 ### 빌드
 
