@@ -3,6 +3,7 @@
 //
 
 #include "Base/Window.h"
+#include "Base/Ui.h"
 
 #include <stdexcept>
 #include <spdlog/spdlog.h>
@@ -54,15 +55,13 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
     SDL_ShowWindow(window_);
 
     while (process_event()) {
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame();
-        ImGui::NewFrame();
+        Ui::newFrame();
 
         currentFrame = SDL_GetTicks();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        if (!ImGui::GetIO().WantCaptureMouse) {
+        if (!Ui::isCaptureMouse()) {
             const Uint8 *state = SDL_GetKeyboardState(nullptr);
             input_.processKeyboard(state, deltaTime, camera_);
 
@@ -80,8 +79,7 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
         update();
         render();
 
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        Ui::render();
     }
 
     SDL_HideWindow(window_);
@@ -127,7 +125,7 @@ bool Window::process_event() {
         if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_RIGHT) {
             input_.setMouseRBtnDown(false);
         }
-        ImGui_ImplSDL2_ProcessEvent(&event);
+        Ui::processEvent(&event);
         if (event.type == SDL_QUIT)
             return false;
         if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window_))

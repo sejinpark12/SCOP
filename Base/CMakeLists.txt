@@ -15,6 +15,8 @@ add_library(Base
     include/Base/Shader.h
     include/Base/Mesh.h
     include/Base/Model.h
+    include/Base/Ui.h
+    include/Base/Uniforms.h
     include/Base/GeometricShapes/Sphere.h
     src/Window.cpp
     src/utility.cpp
@@ -23,6 +25,7 @@ add_library(Base
     src/Shader.cpp
     src/Mesh.cpp
     src/Model.cpp
+    src/Ui.cpp
     src/GeometricShapes/Sphere.cpp)
 
 target_include_directories(Base
