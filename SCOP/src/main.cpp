@@ -74,7 +74,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
        [] {},
        [&app, &window] {
 
-           app.ui->drawUi(uniforms);
+           app.ui->drawUi(window.get_camera(), uniforms);
 
            GL_TEST(glClearColor(uniforms.backGroundColor.r,
                                 uniforms.backGroundColor.g,
@@ -142,6 +142,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            GL_TEST(glUniform4fv(specular_location, 1, glm::value_ptr(uniforms.specular)));
             
            app.sphere->draw(app.programs[uniforms.selectLight]);
+           //app.model->Draw(app.programs[uniforms.selectLight]);
 
            GL_TEST(glBindVertexArray(0));
            GL_TEST(glUseProgram(0));
@@ -156,6 +157,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            std::vector<GLuint>().swap(app.programs);
 
            delete app.sphere;
+
+//           app.model->clearModel();
+//           delete app.model;
+
            shutdown(app);
        });
 
