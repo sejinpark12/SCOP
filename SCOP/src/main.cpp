@@ -67,8 +67,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             app.programs.push_back(dirPhongShader.getProgramId());
             app.programs.push_back(pointShader.getProgramId());
             app.programs.push_back(spotShader.getProgramId());
-            //app.model = new Model(home() / "SCOP/res/objects/teapot.obj");
-            app.sphere = new Sphere();
+            //app.model = new Model(home() / "SCOP/res/objects/Euri.obj");
+            app.model = new Model(home() / "SCOP/res/objects/three_objects.obj");
+            //app.sphere = new Sphere();
             //app.sphere = new Sphere(1, 36, 18, false);
        },
        [] {},
@@ -89,7 +90,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            
            glm::mat4 projection = glm::perspective(glm::radians(fov),
                    static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT),
-                   0.001f, 100.0f) ;
+                   0.001f, 1000.0f) ;
            app.projection_location = glGetUniformLocation(app.programs[uniforms.selectLight], "projection");
            GL_TEST(glUniformMatrix4fv(app.projection_location, 1, GL_FALSE,
                        &projection[0][0]));
@@ -141,8 +142,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            specular_location = glGetUniformLocation(app.programs[uniforms.selectLight], "specular");
            GL_TEST(glUniform4fv(specular_location, 1, glm::value_ptr(uniforms.specular)));
             
-           app.sphere->draw(app.programs[uniforms.selectLight]);
-           //app.model->Draw(app.programs[uniforms.selectLight]);
+           //app.sphere->draw(app.programs[uniforms.selectLight]);
+           app.model->Draw(app.programs[uniforms.selectLight]);
 
            GL_TEST(glBindVertexArray(0));
            GL_TEST(glUseProgram(0));
@@ -156,10 +157,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
                GL_TEST(glDeleteProgram(app.programs[i]));
            std::vector<GLuint>().swap(app.programs);
 
-           delete app.sphere;
+           //delete app.sphere;
 
-//           app.model->clearModel();
-//           delete app.model;
+           app.model->clearModel();
+           delete app.model;
 
            shutdown(app);
        });
