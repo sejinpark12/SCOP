@@ -68,7 +68,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             app.programs.push_back(pointShader.getProgramId());
             app.programs.push_back(spotShader.getProgramId());
             //app.model = new Model(home() / "SCOP/res/objects/Euri.obj");
-            app.model = new Model(home() / "SCOP/res/objects/three_objects.obj");
+            app.model = new Model(home() / "SCOP/objects/three_objects.obj");
             //app.sphere = new Sphere();
             //app.sphere = new Sphere(1, 36, 18, false);
        },
