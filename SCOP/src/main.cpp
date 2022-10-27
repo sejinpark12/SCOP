@@ -1,6 +1,6 @@
 //
 // Created by Daemyung Jang on 2021/10/19.
-// Updated by Sejin Park on 2022/10/25.
+// Updated by Sejin Park on 2022/10/27.
 //
 
 #include <__nullptr>
@@ -32,7 +32,7 @@ struct App {
     GLint model_location{0};
     GLint view_location{0};
     GLint projection_location{0};
-    Model *model{nullptr};
+    std::vector<Model*> models;
     Sphere *sphere{nullptr};
     Ui *ui{nullptr};
 };
@@ -49,12 +49,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
     Window window{{.title = "SCOP", .size = {SCR_WIDTH, SCR_HEIGHT}}};
 
     window.run([&app, &window] {
-            startup(app,window);
+            startup(app, window);
             printAPIInfo(app);
 
             GL_TEST(glEnable(GL_DEPTH_TEST));
-//            Shader shader({home() / "SCOP/res/triangle.vert",
-//                           home() / "SCOP/res/unlit.frag"});
             Shader dirGouraudshader({home() / "SCOP/res/directionlight/gouraud.vert",
                            home() / "SCOP/res/directionlight/gouraud.frag"});
             Shader dirPhongShader({home() / "SCOP/res/directionlight/phong.vert",
@@ -67,15 +65,15 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             app.programs.push_back(dirPhongShader.getProgramId());
             app.programs.push_back(pointShader.getProgramId());
             app.programs.push_back(spotShader.getProgramId());
-            //app.model = new Model(home() / "SCOP/res/objects/Euri.obj");
-            app.model = new Model(home() / "SCOP/objects/three_objects.obj");
+
             //app.sphere = new Sphere();
             //app.sphere = new Sphere(1, 36, 18, false);
+            
+            app.ui = new Ui(window);
        },
        [] {},
        [&app, &window] {
-
-           app.ui->drawUi(window.get_camera(), uniforms);
+           app.ui->drawUi(window.get_camera(), uniforms, app.models);
 
            GL_TEST(glClearColor(uniforms.backGroundColor.r,
                                 uniforms.backGroundColor.g,
@@ -142,8 +140,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            specular_location = glGetUniformLocation(app.programs[uniforms.selectLight], "specular");
            GL_TEST(glUniform4fv(specular_location, 1, glm::value_ptr(uniforms.specular)));
             
-           //app.sphere->draw(app.programs[uniforms.selectLight]);
-           app.model->Draw(app.programs[uniforms.selectLight]);
+           for (int i = 0; i < app.models.size(); i++)
+               app.models[i]->Draw(app.programs[uniforms.selectLight]);
 
            GL_TEST(glBindVertexArray(0));
            GL_TEST(glUseProgram(0));
@@ -159,8 +157,12 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 
            //delete app.sphere;
 
-           app.model->clearModel();
-           delete app.model;
+           for (int i = 0; i < app.models.size(); i++) {
+               app.models[i]->clearModel();
+               delete app.models[i];
+               app.models.pop_back();
+           }
+           delete app.ui;
 
            shutdown(app);
        });

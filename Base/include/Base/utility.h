@@ -11,11 +11,11 @@
 #include <spdlog/spdlog.h>
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
-#include <imgui_impl_opengl3.h>
-#include <imgui_impl_sdl.h>
+//#include <imgui_impl_opengl3.h>
+//#include <imgui_impl_sdl.h>
 
 #include "Window.h"
-#include "Ui.h"
+//#include "Ui.h"
 
 #define STRING(x) #x
 
@@ -93,7 +93,7 @@ void startup(App &app, Window &window) {
 
     EGL_TEST(eglMakeCurrent(app.display, app.surface, app.surface, app.context));
 
-    app.ui = new Ui(window);
+    //app.ui = new Ui(window);
 }
 
 /// EGL 객체 파괴 및 종료를 합니다.
@@ -101,7 +101,7 @@ void startup(App &app, Window &window) {
 /// \param app App 객체입니다.
 template<typename App>
 void shutdown(App &app) {
-    delete app.ui;
+    //delete app.ui;
 
     EGL_TEST(eglMakeCurrent(app.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT));
 

@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:26:38 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/25 18:26:20 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/27 18:26:04 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,14 @@
 #include <imgui_impl_sdl.h>
 #include <imgui.h>
 #include <imgui_internal.h>
+#include <ImGuiFileDialog.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
+#include <iostream>
 #include "Window.h"
 #include "Uniforms.h"
 #include "Camera.h"
+#include "Model.h"
 
 /// UI 클래스
 class Ui {
@@ -33,7 +36,7 @@ public:
     /// 소멸자
     ~Ui();
 
-    void drawUi(Camera &cam, Uniforms &uniforms);
+    void drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models);
     static void newFrame();
     static void render();
     static bool isCaptureMouse();

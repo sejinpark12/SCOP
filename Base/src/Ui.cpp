@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:31:56 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/25 18:41:17 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/27 18:25:50 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,35 @@ Ui::~Ui() {
     ImGui::DestroyContext(uiContext_);
 }
 
-void Ui::drawUi(Camera &cam, Uniforms &uniforms) {
+void Ui::drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models) {
     ImGui::Begin("Objects", NULL, ImGuiWindowFlags_MenuBar);
     if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("Select")) {
+        if (ImGui::BeginMenu("Create")) {
             if (ImGui::MenuItem("Sphere", "Ctrl+s"))  { }
-            if (ImGui::MenuItem("Open .obj", "Ctrl+o")) { /* Do stuff */ }
+            if (ImGui::MenuItem("Open .obj", "Ctrl+o")) {
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".obj", "SCOP/objects/");
+            }
+
             ImGui::EndMenu();
+        }
+        // display
+        if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) {
+            // action if OK
+            if (ImGuiFileDialog::Instance()->IsOk()) {
+                std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+                std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+//                std::cout << filePathName << std::endl;
+//                std::cout << filePath << std::endl;
+                // action
+                for (int i = 0; i < models.size(); i++) {
+                    delete models[i];
+                    models.pop_back();
+                }
+                models.push_back(new Model(filePathName));
+            }
+
+            // close
+            ImGuiFileDialog::Instance()->Close();
         }
         ImGui::EndMenuBar();
         ImGui::Separator();

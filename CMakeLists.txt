@@ -9,5 +9,5 @@ list(APPEND CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/Modules)
 
 add_subdirectory(Base)
-#add_subdirectory(Test)
+add_subdirectory(SDK/3rdparty)
 add_subdirectory(SCOP)

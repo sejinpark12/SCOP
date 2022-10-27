@@ -55,7 +55,8 @@ target_link_libraries(Base
            assimp::assimp
            imgui::imgui
            EGL
-           GLESv3)
+           GLESv3
+           ImGuiFileDialog)
 
 find_path(STB_INCLUDE_DIRS "stb_c_lexer.h")
 target_include_directories(Base PRIVATE ${STB_INCLUDE_DIRS})
