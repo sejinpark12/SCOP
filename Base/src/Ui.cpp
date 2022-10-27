@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:31:56 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/27 18:25:50 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/27 19:45:12 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,43 @@ Ui::~Ui() {
     ImGui::DestroyContext(uiContext_);
 }
 
-void Ui::drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models) {
+void Ui::drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models,
+                std::vector<Sphere*> &spheres) {
     ImGui::Begin("Objects", NULL, ImGuiWindowFlags_MenuBar);
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("Create")) {
-            if (ImGui::MenuItem("Sphere", "Ctrl+s"))  { }
+            if (ImGui::MenuItem("Sphere", "Ctrl+s"))  {
+                ImGui::OpenPopup("CreateSphere");
+                if (ImGui::BeginPopupModal("CreateSphere", NULL)) {
+                    ImGui::Text("POPUP A.\n");
+                    float radius = 1.0f;
+                    int sectorCount = 36;
+                    int stackCount = 18;
+
+                    ImGui::SliderFloat("Radius", &radius, 0.1f, 5.0f);
+                    ImGui::SliderInt("Sector Count", &sectorCount, 3, 50);
+                    ImGui::SliderInt("Stack Count", &stackCount, 2, 50);
+                    if (ImGui::Button("Create")) {
+                        for (int i = 0; i < spheres.size(); i++) {
+                            delete spheres[i];
+                            spheres.pop_back();
+                        }
+                        spheres.push_back(new Sphere(radius, sectorCount, stackCount));
+                    }
+                    if (ImGui::Button("Cancel")) {
+                    }
+                    ImGui::EndPopup();
+                }
+            }
             if (ImGui::MenuItem("Open .obj", "Ctrl+o")) {
                 ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".obj", "SCOP/objects/");
             }
 
             ImGui::EndMenu();
         }
-        // display
+
+
+        // file dialog display
         if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) {
             // action if OK
             if (ImGuiFileDialog::Instance()->IsOk()) {

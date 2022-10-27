@@ -32,9 +32,9 @@ struct App {
     GLint model_location{0};
     GLint view_location{0};
     GLint projection_location{0};
-    std::vector<Model*> models;
-    Sphere *sphere{nullptr};
     Ui *ui{nullptr};
+    std::vector<Model*> models;
+    std::vector<Sphere*> spheres;
 };
 
 const unsigned int SCR_WIDTH = 1280;
@@ -73,7 +73,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
        },
        [] {},
        [&app, &window] {
-           app.ui->drawUi(window.get_camera(), uniforms, app.models);
+           app.ui->drawUi(window.get_camera(), uniforms, app.models, app.spheres);
 
            GL_TEST(glClearColor(uniforms.backGroundColor.r,
                                 uniforms.backGroundColor.g,
@@ -143,6 +143,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            for (int i = 0; i < app.models.size(); i++)
                app.models[i]->Draw(app.programs[uniforms.selectLight]);
 
+           for (int i = 0; i < app.spheres.size(); i++)
+               app.spheres[i]->draw(app.programs[uniforms.selectLight]);
+
            GL_TEST(glBindVertexArray(0));
            GL_TEST(glUseProgram(0));
 
@@ -155,13 +158,17 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
                GL_TEST(glDeleteProgram(app.programs[i]));
            std::vector<GLuint>().swap(app.programs);
 
-           //delete app.sphere;
 
            for (int i = 0; i < app.models.size(); i++) {
                app.models[i]->clearModel();
                delete app.models[i];
                app.models.pop_back();
            }
+
+           for (int i = 0; i < app.spheres.size(); i++) {
+               delete app.spheres[i];
+           }
+
            delete app.ui;
 
            shutdown(app);

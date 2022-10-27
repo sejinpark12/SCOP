@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:26:38 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/27 18:26:04 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/27 19:27:06 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 #include "Uniforms.h"
 #include "Camera.h"
 #include "Model.h"
+#include "GeometricShapes/Sphere.h"
 
 /// UI 클래스
 class Ui {
@@ -36,7 +37,8 @@ public:
     /// 소멸자
     ~Ui();
 
-    void drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models);
+    void drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models,
+                std::vector<Sphere*> &spheres);
     static void newFrame();
     static void render();
     static bool isCaptureMouse();
