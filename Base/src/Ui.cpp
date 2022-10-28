@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:31:56 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/27 19:45:12 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/28 18:25:03 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,40 +31,26 @@ Ui::~Ui() {
 
 void Ui::drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models,
                 std::vector<Sphere*> &spheres) {
-    ImGui::Begin("Objects", NULL, ImGuiWindowFlags_MenuBar);
-    if (ImGui::BeginMenuBar()) {
+    bool openSphereModal = false;
+    bool openHelpModal = false;
+    ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.16f, 0.24f, 0.43f, 1.0f)); // Menu bar background color
+    //ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 16.0f)); // Menu bar padding
+    if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("Create")) {
-            if (ImGui::MenuItem("Sphere", "Ctrl+s"))  {
-                ImGui::OpenPopup("CreateSphere");
-                if (ImGui::BeginPopupModal("CreateSphere", NULL)) {
-                    ImGui::Text("POPUP A.\n");
-                    float radius = 1.0f;
-                    int sectorCount = 36;
-                    int stackCount = 18;
-
-                    ImGui::SliderFloat("Radius", &radius, 0.1f, 5.0f);
-                    ImGui::SliderInt("Sector Count", &sectorCount, 3, 50);
-                    ImGui::SliderInt("Stack Count", &stackCount, 2, 50);
-                    if (ImGui::Button("Create")) {
-                        for (int i = 0; i < spheres.size(); i++) {
-                            delete spheres[i];
-                            spheres.pop_back();
-                        }
-                        spheres.push_back(new Sphere(radius, sectorCount, stackCount));
-                    }
-                    if (ImGui::Button("Cancel")) {
-                    }
-                    ImGui::EndPopup();
-                }
+            if (ImGui::MenuItem("Create Sphere")) {
+                openSphereModal = true;
             }
-            if (ImGui::MenuItem("Open .obj", "Ctrl+o")) {
+            if (ImGui::MenuItem("Import .obj File", "Ctrl+o")) {
                 ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".obj", "SCOP/objects/");
             }
-
             ImGui::EndMenu();
         }
-
-
+        if (ImGui::BeginMenu("Help")) {
+            if (ImGui::MenuItem("Help")) {
+                openHelpModal = true;
+            }
+            ImGui::EndMenu();
+        }
         // file dialog display
         if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) {
             // action if OK
@@ -74,6 +60,10 @@ void Ui::drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models,
 //                std::cout << filePathName << std::endl;
 //                std::cout << filePath << std::endl;
                 // action
+                for (int i = 0; i < spheres.size(); i++) {
+                    delete spheres[i];
+                    spheres.pop_back();
+                }
                 for (int i = 0; i < models.size(); i++) {
                     delete models[i];
                     models.pop_back();
@@ -84,15 +74,100 @@ void Ui::drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models,
             // close
             ImGuiFileDialog::Instance()->Close();
         }
-        ImGui::EndMenuBar();
-        ImGui::Separator();
+        ImGui::EndMainMenuBar();
+    }
+    //ImGui::PopStyleVar(1);
+    ImGui::PopStyleColor(1);
+
+    if (openSphereModal) {
+        ImGui::OpenPopup("Sphere");
+    }
+    if (ImGui::BeginPopupModal("Sphere")) {
+        static float radius = 1.0f;
+        static int sectorCount = 36;
+        static int stackCount = 18;
+        ImGui::SliderFloat("Radius", &radius, 0.1f, 5.0f);
+        ImGui::SliderInt("Sector Count", &sectorCount, 3, 50);
+        ImGui::SliderInt("Stack Count", &stackCount, 2, 50);
+        if (ImGui::Button("Create")) {
+            for (int i = 0; i < spheres.size(); i++) {
+                delete spheres[i];
+                spheres.pop_back();
+            }
+            for (int i = 0; i < models.size(); i++) {
+                delete models[i];
+                models.pop_back();
+            }
+            spheres.push_back(new Sphere(radius, sectorCount, stackCount));
+            ImGui::CloseCurrentPopup();
+            openSphereModal = false;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel")) {
+            ImGui::CloseCurrentPopup();
+            openSphereModal = false;
+        }
+        ImGui::EndPopup();
+    }
+
+    if (openHelpModal) {
+        ImGui::OpenPopup("Help");
+    }
+    if (ImGui::BeginPopupModal("Help")) {
+        if (ImGui::BeginTable("table1", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text("w");
+            ImGui::TableNextColumn();
+            ImGui::Text("Move Forward");
+
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text("s");
+            ImGui::TableNextColumn();
+            ImGui::Text("Move Backward");
+
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text("a");
+            ImGui::TableNextColumn();
+            ImGui::Text("Move Left");
+
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text("d");
+            ImGui::TableNextColumn();
+            ImGui::Text("Move Right");
+
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text("Left Mouse Button Drag");
+            ImGui::TableNextColumn();
+            ImGui::Text("Change Camera Direction");
+
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text("Right Mouse Button Click + w/s");
+            ImGui::TableNextColumn();
+            ImGui::Text("Move Up/Down");
+            ImGui::EndTable();
+        }
+        if (ImGui::Button("Ok")) {
+            ImGui::CloseCurrentPopup();
+            openHelpModal = false;
+        }
+        ImGui::EndPopup();
+    }
+
+    if (ImGui::Begin("Status")) {
+        if (ImGui::CollapsingHeader("Info", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::Text("Object Name: ");
+            ImGui::Text("Vertex Count: ");
+            ImGui::Text("Index Count: ");
+            ImGui::Text("Face Count: ");
+        }
         if (ImGui::CollapsingHeader("FPS", ImGuiTreeNodeFlags_DefaultOpen)) {
         }
-    }
-    ImGui::End();
-
-    if (ImGui::Begin("Help")) {
-        ImGui::Text("This is first text...");
     }
     ImGui::End();
 
