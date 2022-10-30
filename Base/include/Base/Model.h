@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 18:17:23 by sejpark           #+#    #+#             */
-/*   Updated: 2022/09/02 15:53:18 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/30 20:21:40 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ public:
     void Draw(GLuint programId); 
 
     void clearModel();
+    const std::vector<Mesh> &getMeshes() const;
 
 private:
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.

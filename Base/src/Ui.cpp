@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:31:56 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/28 18:25:03 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/30 20:50:22 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ Ui::Ui(const Window &window) {
     ImGui_ImplOpenGL3_Init();
     ImGui_ImplOpenGL3_CreateFontsTexture();
     ImGui_ImplOpenGL3_CreateDeviceObjects();
+    modelStatus_.modelName = "NONE";
+    modelStatus_.totalVerticesCount = 0;
+    modelStatus_.totalIndicesCount = 0;
+    modelStatus_.totalFacesCount = 0;
+    modelStatus_.fps = 0;
 }
 
 Ui::~Ui() {
@@ -69,6 +74,14 @@ void Ui::drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models,
                     models.pop_back();
                 }
                 models.push_back(new Model(filePathName));
+
+                // 모델 정보 설정
+                modelStatus_.modelName = filePathName;
+                modelStatus_.totalVerticesCount = 0;
+                modelStatus_.totalIndicesCount = 0;
+                modelStatus_.totalFacesCount = 0;
+                for (int i = 0; i < models.size(); i++)
+                    setModelStatus(models[i]);
             }
 
             // close
@@ -161,10 +174,36 @@ void Ui::drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models,
 
     if (ImGui::Begin("Status")) {
         if (ImGui::CollapsingHeader("Info", ImGuiTreeNodeFlags_DefaultOpen)) {
-            ImGui::Text("Object Name: ");
-            ImGui::Text("Vertex Count: ");
-            ImGui::Text("Index Count: ");
-            ImGui::Text("Face Count: ");
+            if (ImGui::BeginTable("table1", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::Text("Model Name");
+                ImGui::TableNextColumn();
+                ImGui::TextUnformatted(modelStatus_.modelName.c_str());
+                //ImGui::Text(modelStatus_.modelName.c_str());
+
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::Text("Vertices Count");
+                ImGui::TableNextColumn();
+                ImGui::TextUnformatted(std::to_string(modelStatus_.totalVerticesCount).c_str());
+                //ImGui::Text(modelStatus_.totalVerticesCount);
+
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::Text("Indices Count");
+                ImGui::TableNextColumn();
+                ImGui::TextUnformatted(std::to_string(modelStatus_.totalIndicesCount).c_str());
+                //ImGui::Text(modelStatus_.totalIndicesCount);
+
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::Text("Faces Count");
+                ImGui::TableNextColumn();
+                ImGui::TextUnformatted(std::to_string(modelStatus_.totalFacesCount).c_str());
+                //ImGui::Text(modelStatus_.totalFacesCount);
+                ImGui::EndTable();
+            }
         }
         if (ImGui::CollapsingHeader("FPS", ImGuiTreeNodeFlags_DefaultOpen)) {
         }
@@ -286,4 +325,15 @@ void Ui::DragFloat3(const std::string label,
     ImGui::PopItemWidth();
     ImGui::PopID();
     ImGui::EndGroup();
+}
+
+struct ModelStatus Ui::setModelStatus(Model *model) {
+    const std::vector<Mesh> &meshes = model->getMeshes(); 
+
+    for (int i = 0; i < meshes.size(); i++) {
+        modelStatus_.totalVerticesCount += meshes[i].vertices_.size();
+        modelStatus_.totalIndicesCount += meshes[i].indices_.size();
+    }
+    modelStatus_.totalFacesCount += modelStatus_.totalIndicesCount / 3;
+    return modelStatus_;
 }

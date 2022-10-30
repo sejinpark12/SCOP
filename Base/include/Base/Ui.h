@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:26:38 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/27 19:27:06 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/30 20:37:12 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,14 @@
 #include "Camera.h"
 #include "Model.h"
 #include "GeometricShapes/Sphere.h"
+
+struct ModelStatus {
+    std::string modelName;
+    unsigned int totalVerticesCount;
+    unsigned int totalIndicesCount;
+    unsigned int totalFacesCount;
+    unsigned int fps;
+};
 
 /// UI 클래스
 class Ui {
@@ -54,8 +62,12 @@ private:
                     const std::string format = "%.3f",
                     ImGuiSliderFlags flags = 0);
 
+    struct ModelStatus setModelStatus(Model *model);
+
+
 private:
     ImGuiContext *uiContext_;
+    struct ModelStatus modelStatus_;
 };
 
 #endif ///UI_H
