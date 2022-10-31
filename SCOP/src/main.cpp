@@ -15,27 +15,29 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <iostream>
+#include <Base/App.h>
 #include <Base/Window.h>
 #include <Base/utility.h>
 #include <Base/Shader.h>
-#include <Base/Model.h>
-#include <Base/GeometricShapes/Sphere.h>
+//#include <Base/Model.h>
+//#include <Base/GeometricShapes/Sphere.h>
+#include <Base/Objects.h>
 #include <Base/Ui.h>
 #include <Base/Uniforms.h>
 
-struct App {
-    EGLDisplay display{EGL_NO_DISPLAY};
-    EGLConfig config{nullptr};
-    EGLContext context{EGL_NO_CONTEXT};
-    EGLSurface surface{EGL_NO_SURFACE};
-    std::vector<GLuint> programs;
-    GLint model_location{0};
-    GLint view_location{0};
-    GLint projection_location{0};
-    Ui *ui{nullptr};
-    std::vector<Model*> models;
-    std::vector<Sphere*> spheres;
-};
+//struct App {
+//    EGLDisplay display{EGL_NO_DISPLAY};
+//    EGLConfig config{nullptr};
+//    EGLContext context{EGL_NO_CONTEXT};
+//    EGLSurface surface{EGL_NO_SURFACE};
+//    std::vector<GLuint> programs;
+//    GLint model_location{0};
+//    GLint view_location{0};
+//    GLint projection_location{0};
+//    Ui *ui{nullptr};
+//    std::vector<Model*> models;
+//    std::vector<Sphere*> spheres;
+//};
 
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
@@ -66,14 +68,12 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
             app.programs.push_back(pointShader.getProgramId());
             app.programs.push_back(spotShader.getProgramId());
 
-            //app.sphere = new Sphere();
-            //app.sphere = new Sphere(1, 36, 18, false);
-            
             app.ui = new Ui(window);
        },
        [] {},
        [&app, &window] {
-           app.ui->drawUi(window.get_camera(), uniforms, app.models, app.spheres);
+           //app.ui->drawUi(window.get_camera(), uniforms, app.models, app.spheres);
+           app.ui->drawUi(uniforms, app.objects);
 
            GL_TEST(glClearColor(uniforms.backGroundColor.r,
                                 uniforms.backGroundColor.g,
@@ -140,11 +140,11 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            specular_location = glGetUniformLocation(app.programs[uniforms.selectLight], "specular");
            GL_TEST(glUniform4fv(specular_location, 1, glm::value_ptr(uniforms.specular)));
             
-           for (int i = 0; i < app.models.size(); i++)
-               app.models[i]->Draw(app.programs[uniforms.selectLight]);
+           for (int i = 0; i < app.objects.models.size(); i++)
+               app.objects.models[i]->Draw(app.programs[uniforms.selectLight]);
 
-           for (int i = 0; i < app.spheres.size(); i++)
-               app.spheres[i]->draw(app.programs[uniforms.selectLight]);
+           for (int i = 0; i < app.objects.spheres.size(); i++)
+               app.objects.spheres[i]->draw(app.programs[uniforms.selectLight]);
 
            GL_TEST(glBindVertexArray(0));
            GL_TEST(glUseProgram(0));
@@ -159,14 +159,14 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            std::vector<GLuint>().swap(app.programs);
 
 
-           for (int i = 0; i < app.models.size(); i++) {
-               app.models[i]->clearModel();
-               delete app.models[i];
-               app.models.pop_back();
+           for (int i = 0; i < app.objects.models.size(); i++) {
+               app.objects.models[i]->clearModel();
+               delete app.objects.models[i];
+               app.objects.models.pop_back();
            }
 
-           for (int i = 0; i < app.spheres.size(); i++) {
-               delete app.spheres[i];
+           for (int i = 0; i < app.objects.spheres.size(); i++) {
+               delete app.objects.spheres[i];
            }
 
            delete app.ui;

@@ -122,6 +122,8 @@ void shutdown(App &app) {
 /// \return HOME 경로를 반환합니다.
 std::filesystem::path home();
 
+void millisecPerFrame(float currentTime, float &lastTime, int &framesNum, float &result);
+
 template<typename App>
 void printAPIInfo(App &app) {
     SPDLOG_INFO("EGL Version: {}", eglQueryString(app.display, EGL_VERSION));

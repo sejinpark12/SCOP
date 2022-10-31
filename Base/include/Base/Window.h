@@ -80,6 +80,9 @@ public:
     /// \return camera_ 맴버변수입니다.
     [[nodiscard]] Camera &get_camera();
 
+
+    [[nodiscard]] float getMillisecPerFrame() const;
+
 private:
     /// 이벤트를 처리합니다.
     /// \return 이벤트 루프를 유지하는 경우는 참, 종료하는 경우는 거짓을 반환합니다.
@@ -90,10 +93,16 @@ private:
     /// \return 윈도우가 종료되는 경우는 참, 종료하지 않는 경우는 거짓을 반환합니다.
     [[nodiscard]] bool should_close_window(const SDL_Event &event) const;
 
+    double clockToMilliseconds(clock_t ticks){
+    // units/(units/time) => time (seconds) * 1000 = milliseconds
+        return (ticks/(double)CLOCKS_PER_SEC)*1000.0;
+    }
+
 private:
     SDL_Window *window_{nullptr};
     Camera camera_;
     Input input_;
+    float msPerFrame_;
 };
 
 #endif //WINDOW_H

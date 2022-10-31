@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:26:38 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/31 13:44:14 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/31 20:31:51 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <ImGuiFileDialog.h>
+#include <implot.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
 #include <iostream>
 #include "Window.h"
 #include "Uniforms.h"
 #include "Camera.h"
-#include "Model.h"
-#include "GeometricShapes/Sphere.h"
+#include "Objects.h"
 
 struct ModelStatus {
     std::string modelName;
@@ -36,17 +36,35 @@ struct ModelStatus {
     unsigned int fps;
 };
 
+struct FPSBuffer {
+    float Span;
+    ImVector<ImVec2> Data;
+    FPSBuffer() {
+        Span = 10.0f;
+        Data.reserve(2000);
+    }
+    void AddPoint(float x, float y) {
+        float xmod = fmodf(x, Span);
+        if (!Data.empty() && xmod < Data.back().x)
+            Data.shrink(0);
+        Data.push_back(ImVec2(xmod, y));
+    }
+};
+
 /// UI 클래스
 class Ui {
 public:
     /// 생성자
-    explicit Ui(const Window &window);
+    explicit Ui(Window &window);
 
     /// 소멸자
     ~Ui();
 
-    void drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models,
-                std::vector<Sphere*> &spheres);
+//    void drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models,
+//                std::vector<Sphere*> &spheres);
+
+    void drawUi(Uniforms &uniforms, Objects &objects);
+
     static void newFrame();
     static void render();
     static bool isCaptureMouse();
@@ -65,8 +83,8 @@ private:
     struct ModelStatus setModelStatus(Model *model);
     struct ModelStatus setSphereStatus(Sphere *sphere);
 
-
 private:
+    Window &window_;
     ImGuiContext *uiContext_;
     struct ModelStatus modelStatus_;
 };

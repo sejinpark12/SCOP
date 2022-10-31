@@ -9,3 +9,13 @@
 std::filesystem::path home() {
     return {HOME_PATH};
 }
+
+void millisecPerFrame(float currentTime, float &lastTime, int &framesNum, float &result) {
+    framesNum++;
+
+    if (currentTime - lastTime >= 1000.0f) {
+        result = 1000.0f / float(framesNum);
+        framesNum = 0;
+        lastTime += 1000.0f;
+    }
+}

@@ -17,6 +17,8 @@ add_library(Base
     include/Base/Model.h
     include/Base/Ui.h
     include/Base/Uniforms.h
+    include/Base/App.h
+    include/Base/Objects.h
     include/Base/GeometricShapes/Sphere.h
     src/Window.cpp
     src/utility.cpp
@@ -45,6 +47,7 @@ find_package(glm CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
 find_package(assimp CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
+find_package(implot CONFIG REQUIRED)
 find_package(EGL REQUIRED)
 find_package(GLESv3 REQUIRED)
 
@@ -54,6 +57,7 @@ target_link_libraries(Base
            SDL2::SDL2
            assimp::assimp
            imgui::imgui
+           implot::implot
            EGL
            GLESv3
            ImGuiFileDialog)

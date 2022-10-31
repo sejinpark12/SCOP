@@ -28,6 +28,7 @@ Window::Window(const Descriptor &descriptor) : input_(descriptor.size.x / 2, des
         SPDLOG_ERROR("{}", SDL_GetError());
         throw std::runtime_error("Fail to create Window.");
     }
+    msPerFrame_ = 0;
 }
 
 Window::~Window() {
@@ -51,6 +52,16 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
     /// 맨 처음 프레임의 마우스 커서
     bool firstMouse = true;
 
+    float lastTime = SDL_GetTicks();
+    int framesNum = 0;
+
+    ////////////////////
+    clock_t deltaTime_ = 0;
+    unsigned int frames = 0;
+    double  frameRate = 30;
+    double  averageFrameTimeMilliseconds = 33.333;
+    ////////////////////
+
     startup();
     SDL_ShowWindow(window_);
 
@@ -58,6 +69,14 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
         Ui::newFrame();
 
         currentFrame = SDL_GetTicks();
+        clock_t beginFrame = clock();
+        //millisecPerFrame(currentFrame, lastTime, framesNum, msPerFrame_);
+//        framesNum++;
+//        if (currentFrame - lastFrame >= 1000.0) {
+//            std::cout << 1000.0 / double(framesNum) << "ms/frame" << std::endl;
+//            framesNum = 0;
+//            lastTime += 1000.0;
+//        }
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
@@ -80,6 +99,24 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
         render();
 
         Ui::render();
+
+        //////////////////////////
+        clock_t endFrame = clock();
+
+        deltaTime_ += endFrame - beginFrame;
+        frames ++;
+
+        //if you really want FPS
+        if( clockToMilliseconds(deltaTime_)>1000.0){ //every second
+            frameRate = (double)frames*0.5 +  frameRate*0.5; //more stable
+            frames = 0;
+            deltaTime_ -= CLOCKS_PER_SEC;
+            averageFrameTimeMilliseconds  = 1000.0/(frameRate==0?0.001:frameRate);
+            msPerFrame_  = 1000.0/(frameRate==0?0.001:frameRate);
+
+            std::cout<<"FrameTime was:"<<averageFrameTimeMilliseconds<<std::endl;
+        }
+        //////////////////////////
     }
 
     SDL_HideWindow(window_);
@@ -144,4 +181,8 @@ SDL_Window *Window::getWindow() const {
 
 Camera &Window::get_camera() {
     return camera_;
+}
+
+float Window::getMillisecPerFrame() const {
+    return msPerFrame_;
 }
