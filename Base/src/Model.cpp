@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 17:32:18 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/30 20:33:30 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/31 14:01:15 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
         // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
         meshes_.push_back(processMesh(mesh, scene));
-        std::cout << "mMeshes[" << node->mMeshes[i] << "] numVertices : " << mesh->mNumVertices << std::endl; 
-        std::cout << "mMeshes[" << node->mMeshes[i] << "] numFaces: " << mesh->mNumFaces<< std::endl; 
+//        std::cout << "mMeshes[" << node->mMeshes[i] << "] numVertices : " << mesh->mNumVertices << std::endl; 
+//        std::cout << "mMeshes[" << node->mMeshes[i] << "] numFaces: " << mesh->mNumFaces<< std::endl; 
     }
     // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
     for (unsigned int i = 0; i <node->mNumChildren; i++) {

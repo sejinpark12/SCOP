@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:31:56 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/30 20:50:22 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/31 13:59:28 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void Ui::drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models,
                 models.push_back(new Model(filePathName));
 
                 // 모델 정보 설정
-                modelStatus_.modelName = filePathName;
+                modelStatus_.modelName = ImGuiFileDialog::Instance()->GetCurrentFileName();
                 modelStatus_.totalVerticesCount = 0;
                 modelStatus_.totalIndicesCount = 0;
                 modelStatus_.totalFacesCount = 0;
@@ -112,6 +112,15 @@ void Ui::drawUi(Camera &cam, Uniforms &uniforms, std::vector<Model*> &models,
                 models.pop_back();
             }
             spheres.push_back(new Sphere(radius, sectorCount, stackCount));
+
+            // 모델 정보 설정
+            modelStatus_.modelName = "Sphere";
+            modelStatus_.totalVerticesCount = 0;
+            modelStatus_.totalIndicesCount = 0;
+            modelStatus_.totalFacesCount = 0;
+            for (int i = 0; i < spheres.size(); i++)
+                setSphereStatus(spheres[i]);
+
             ImGui::CloseCurrentPopup();
             openSphereModal = false;
         }
@@ -335,5 +344,12 @@ struct ModelStatus Ui::setModelStatus(Model *model) {
         modelStatus_.totalIndicesCount += meshes[i].indices_.size();
     }
     modelStatus_.totalFacesCount += modelStatus_.totalIndicesCount / 3;
+    return modelStatus_;
+}
+
+struct ModelStatus Ui::setSphereStatus(Sphere *sphere) {
+    modelStatus_.totalVerticesCount = sphere->getInterleavedVertexCount();
+    modelStatus_.totalIndicesCount = sphere->getIndexCount();
+    modelStatus_.totalFacesCount = modelStatus_.totalIndicesCount / 3;
     return modelStatus_;
 }

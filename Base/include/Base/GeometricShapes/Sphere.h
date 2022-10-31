@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:25:28 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/21 20:34:18 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/31 13:50:46 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,12 @@ public:
     /// \return 인덱스 배열의 주소입니다. 
     const unsigned int *getIndices() const {
         return indices_.data();
+    }
+
+    /// interleavedVertices_ 배열의 전체 원소 개수를 반환하는 함수입니다.
+    /// \return 맴버변수 interleavedVertices_의 모든 원소들의 개수입니다. 
+    unsigned int getInterleavedVertexCount() const  {
+        return (unsigned int)interleavedVertices_.size();
     }
 
     /// interleavedVertices_ 배열의 전체 크기를 반환하는 함수입니다.

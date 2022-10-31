@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:26:38 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/30 20:37:12 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/10/31 13:44:14 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ private:
                     ImGuiSliderFlags flags = 0);
 
     struct ModelStatus setModelStatus(Model *model);
+    struct ModelStatus setSphereStatus(Sphere *sphere);
 
 
 private:
