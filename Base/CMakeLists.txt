@@ -37,7 +37,8 @@ target_compile_features(Base
     PUBLIC cxx_std_17)
 
 target_compile_options(Base
-    PUBLIC -g)
+    PUBLIC -Wall -Wextra )
+#PUBLIC -fsanitize=address -g3)
 
 target_compile_definitions(Base
     PUBLIC HOME_PATH="${CMAKE_HOME_DIRECTORY}")

@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:26:38 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/31 20:31:51 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/11/01 15:26:34 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,31 @@ struct ModelStatus {
     unsigned int fps;
 };
 
-struct FPSBuffer {
-    float Span;
-    ImVector<ImVec2> Data;
-    FPSBuffer() {
-        Span = 10.0f;
-        Data.reserve(2000);
+struct ScrollingBuffer {
+    int maxSize;
+    int offset;
+    ImVector<ImVec2> data;
+
+    ScrollingBuffer(int max_size = 8000) {
+        maxSize = max_size;
+        offset = 0;
+        data.reserve(maxSize);
     }
+
     void AddPoint(float x, float y) {
-        float xmod = fmodf(x, Span);
-        if (!Data.empty() && xmod < Data.back().x)
-            Data.shrink(0);
-        Data.push_back(ImVec2(xmod, y));
+        if (data.size() < maxSize)
+            data.push_back(ImVec2(x, y));
+        else {
+            data[offset] = ImVec2(x, y);
+            offset = (offset + 1) % maxSize;
+        }
+    }
+
+    void Erase() {
+        if (data.size() > 0) {
+            data.shrink(0);
+            offset = 0;
+        }
     }
 };
 

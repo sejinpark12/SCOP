@@ -140,11 +140,13 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            specular_location = glGetUniformLocation(app.programs[uniforms.selectLight], "specular");
            GL_TEST(glUniform4fv(specular_location, 1, glm::value_ptr(uniforms.specular)));
             
-           for (int i = 0; i < app.objects.models.size(); i++)
+           for (size_t i = 0; i < app.objects.models.size(); i++)
                app.objects.models[i]->Draw(app.programs[uniforms.selectLight]);
 
-           for (int i = 0; i < app.objects.spheres.size(); i++)
-               app.objects.spheres[i]->draw(app.programs[uniforms.selectLight]);
+           for (size_t i = 0; i < app.objects.spheres.size(); i++) {
+               //app.objects.spheres[i]->draw(app.programs[uniforms.selectLight]);
+               app.objects.spheres[i]->draw();
+           }
 
            GL_TEST(glBindVertexArray(0));
            GL_TEST(glUseProgram(0));
@@ -154,18 +156,18 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
            EGL_TEST(eglSwapBuffers(app.display, app.surface));
        },
        [&app] {
-           for (int i = 0; i < app.programs.size(); i++)
+           for (size_t i = 0; i < app.programs.size(); i++)
                GL_TEST(glDeleteProgram(app.programs[i]));
            std::vector<GLuint>().swap(app.programs);
 
 
-           for (int i = 0; i < app.objects.models.size(); i++) {
+           for (size_t i = 0; i < app.objects.models.size(); i++) {
                app.objects.models[i]->clearModel();
                delete app.objects.models[i];
                app.objects.models.pop_back();
            }
 
-           for (int i = 0; i < app.objects.spheres.size(); i++) {
+           for (size_t i = 0; i < app.objects.spheres.size(); i++) {
                delete app.objects.spheres[i];
            }
 

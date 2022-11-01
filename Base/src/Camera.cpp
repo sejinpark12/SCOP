@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 16:43:56 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/20 00:08:55 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/11/01 16:05:57 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,11 @@ const glm::vec3 Camera::getUp() const {
     return up_;
 }
 
-const GLfloat Camera::getYaw() const {
+GLfloat Camera::getYaw() const {
     return yaw_;
 }
 
-const GLfloat Camera::getPitch() const {
+GLfloat Camera::getPitch() const {
     return pitch_;
 }
 

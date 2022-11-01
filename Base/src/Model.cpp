@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 17:32:18 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/31 14:01:15 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/11/01 16:11:03 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ unsigned int Model::textureFromFile(const char *path, const std::string &directo
             format = GL_RED;
         else if (nrComponents == 3)
             format = GL_RGB;
-        else if (nrComponents == 4)
+        else 
             format = GL_RGBA;
 
         glBindTexture(GL_TEXTURE_2D, textureID);

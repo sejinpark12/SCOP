@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:35:45 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/21 20:03:00 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/11/01 16:17:47 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ Sphere::Sphere(float radius, int sectorCount, int stackCount, bool smooth)
 
 Sphere::~Sphere() {}
 
-void Sphere::draw(GLuint programId) const {
+//void Sphere::draw(GLuint programId) const {
+void Sphere::draw() const {
     GL_TEST(glBindVertexArray(vertex_array_));
     GL_TEST(glDrawElements(GL_TRIANGLES, this->getIndexCount(), GL_UNSIGNED_INT, 0));
 
@@ -254,12 +255,11 @@ void Sphere::buildInterleavedVertices() {
     // interleavedVertices_ 의 메모리를 초기화합니다.
     std::vector<float>().swap(interleavedVertices_);
 
-    std::size_t i, j;
     std::size_t count = vertices_.size();
 
     // interleavedVertices_ 맴버변수에 버텍스 좌표, 법선벡터, 텍스처 좌표 순으로
     // 추가합니다.
-    for (int i = 0, j = 0; i < count; i += 3, j += 2) {
+    for (size_t i = 0, j = 0; i < count; i += 3, j += 2) {
         interleavedVertices_.push_back(vertices_[i]);
         interleavedVertices_.push_back(vertices_[i + 1]);
         interleavedVertices_.push_back(vertices_[i + 2]);

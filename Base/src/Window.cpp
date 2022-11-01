@@ -56,10 +56,10 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
     int framesNum = 0;
 
     ////////////////////
-    clock_t deltaTime_ = 0;
-    unsigned int frames = 0;
-    double  frameRate = 30;
-    double  averageFrameTimeMilliseconds = 33.333;
+//    clock_t deltaTime_ = 0;
+//    unsigned int frames = 0;
+//    double  frameRate = 30;
+//    double  averageFrameTimeMilliseconds = 33.333;
     ////////////////////
 
     startup();
@@ -69,8 +69,8 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
         Ui::newFrame();
 
         currentFrame = SDL_GetTicks();
-        clock_t beginFrame = clock();
-        //millisecPerFrame(currentFrame, lastTime, framesNum, msPerFrame_);
+ //       clock_t beginFrame = clock();
+        millisecPerFrame(currentFrame, lastTime, framesNum, msPerFrame_);
 //        framesNum++;
 //        if (currentFrame - lastFrame >= 1000.0) {
 //            std::cout << 1000.0 / double(framesNum) << "ms/frame" << std::endl;
@@ -101,21 +101,21 @@ void Window::run(const std::function<void()> &startup, const std::function<void(
         Ui::render();
 
         //////////////////////////
-        clock_t endFrame = clock();
-
-        deltaTime_ += endFrame - beginFrame;
-        frames ++;
-
-        //if you really want FPS
-        if( clockToMilliseconds(deltaTime_)>1000.0){ //every second
-            frameRate = (double)frames*0.5 +  frameRate*0.5; //more stable
-            frames = 0;
-            deltaTime_ -= CLOCKS_PER_SEC;
-            averageFrameTimeMilliseconds  = 1000.0/(frameRate==0?0.001:frameRate);
-            msPerFrame_  = 1000.0/(frameRate==0?0.001:frameRate);
-
-            std::cout<<"FrameTime was:"<<averageFrameTimeMilliseconds<<std::endl;
-        }
+//        clock_t endFrame = clock();
+//
+//        deltaTime_ += endFrame - beginFrame;
+//        frames ++;
+//
+//        //if you really want FPS
+//        if( clockToMilliseconds(deltaTime_)>1000.0){ //every second
+//            frameRate = (double)frames*0.5 +  frameRate*0.5; //more stable
+//            frames = 0;
+//            deltaTime_ -= CLOCKS_PER_SEC;
+//            averageFrameTimeMilliseconds  = 1000.0/(frameRate==0?0.001:frameRate);
+//            msPerFrame_  = 1000.0/(frameRate==0?0.001:frameRate);
+//
+//            std::cout<<"FrameTime was:"<<averageFrameTimeMilliseconds<<std::endl;
+//        }
         //////////////////////////
     }
 

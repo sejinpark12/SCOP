@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:25:28 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/31 13:50:46 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/11/01 16:16:43 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ public:
     
     /// 구를 렌더링합니다.
     /// \param programId 사용할 셰이더의 네임입니다.
-    void draw(GLuint programId) const;
+    //void draw(GLuint programId) const;
+    void draw() const;
 
 private:
     /// smooth shading으로 구의 버텍스를 생성합니다.

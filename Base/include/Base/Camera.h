@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 16:43:56 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/22 15:39:52 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/11/01 16:05:37 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ public:
     const glm::vec3 getFront() const;
     const glm::vec3 getRight() const;
     const glm::vec3 getUp() const;
-    const float getYaw() const;
-    const float getPitch() const;
+    float getYaw() const;
+    float getPitch() const;
 
     /// 업데이트 된 오일러 각으로 front, right, up 벡터를 계산합니다. 
     void updateCameraVectors();

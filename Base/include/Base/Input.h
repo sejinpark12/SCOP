@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/03 00:10:44 by sejpark           #+#    #+#             */
-/*   Updated: 2022/10/20 00:11:02 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/11/01 16:08:55 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ const float MOUSE_SPEED = 0.1;
 
 class Input {
 private:
-    float keyboard_speed_;
-    float mouse_speed_;
     float last_xpos_;
     float last_ypos_;
+    float keyboard_speed_;
+    float mouse_speed_;
+    bool mouseRBtnDown_;
     float xoffset_;
     float yoffset_;
-    bool mouseRBtnDown_;
 
 public:
     /// 생성자.
