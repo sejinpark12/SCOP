@@ -1,6 +1,6 @@
 # SCOP
 
-![SCOP](./blog/images/SCOP.png)
+![SCOP](./blog/images/SCOP2.png)
 
 ### 프로젝트 설명
 - 블렌더와 같은 모델링 프로그램에서 제작된 3D 오브젝트를 임포트해서 보여주는 프로그램
@@ -22,7 +22,7 @@
 
   2. 라이브러리 설치
     ```
-    $ ./vcpkg/vcpkg install 'imgui[core,opengl3-binding,sdl2-binding]' assimp sdl2 glm catch2 spdlog
+    $ ./vcpkg/vcpkg install 'imgui[core,opengl3-binding,sdl2-binding]' implot assimp sdl2 glm catch2 spdlog
     ```
 
 - SCOP 빌드
