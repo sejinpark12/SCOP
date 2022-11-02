@@ -6,7 +6,7 @@
 /*   By: sejpark <sejpark@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 13:31:56 by sejpark           #+#    #+#             */
-/*   Updated: 2022/11/01 16:12:41 by sejpark          ###   ########.fr       */
+/*   Updated: 2022/11/02 16:33:13 by sejpark          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,30 +214,28 @@ void Ui::drawUi(Uniforms &uniforms, Objects &objects) {
                 ImGui::EndTable();
             }
         }
-        if (ImGui::CollapsingHeader("FPS", ImGuiTreeNodeFlags_DefaultOpen)
+        if (ImGui::CollapsingHeader("Frame Time", ImGuiTreeNodeFlags_DefaultOpen)
                 && modelStatus_.modelName != "NONE") {
             if (ImGui::BeginTable("fpsTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
-                ImGui::Text("ms/frame");
+                ImGui::Text("Frame Time");
                 ImGui::TableNextColumn();
                 ImGui::Text("%.2f ms/frame", window_.getMillisecPerFrame());
                 ImGui::EndTable();
             }
             ImGui::Checkbox("view graph", &viewFpsGraph);
-            static ScrollingBuffer scrollBuf;
             static float t = 0;
+            static ScrollingBuffer scrollBuf;
+            static float history = 10.0f;
             t += ImGui::GetIO().DeltaTime;
-            scrollBuf.AddPoint(t, window_.getMillisecPerFrame());
             if (viewFpsGraph) {
-
-                float history = 10.0f;
-
+                scrollBuf.AddPoint(t, window_.getMillisecPerFrame());
                 if (ImPlot::BeginPlot("##ms/frame", ImVec2(-1, 150))) {
                     ImPlot::SetupAxes("sec", "ms/frame", ImPlotAxisFlags_RangeFit, ImPlotAxisFlags_RangeFit);
                     ImPlot::SetupAxisLimits(ImAxis_X1, t - history, t, ImGuiCond_Always);
                     ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 5);
-                    ImPlot::PlotLine("##NoTitle", &scrollBuf.data[0].x, &scrollBuf.data[0].y, scrollBuf.data.size(), 0, scrollBuf.offset, 2 * sizeof(float));
+                    ImPlot::PlotLine("##NoTitle", &scrollBuf.data[0].x, &scrollBuf.data[0].y, scrollBuf.data.size(), ImPlotLineFlags_Shaded, scrollBuf.offset, 2 * sizeof(float));
                     ImPlot::EndPlot();
                 }
             }
@@ -299,7 +297,7 @@ void Ui::drawUi(Uniforms &uniforms, Objects &objects) {
            //ImGui::Text("Ambient");
            ImGui::SliderFloat("Ambient", &uniforms.ambient, 0.0f, 1.0f);
            //ImGui::Text("Shininess");
-           ImGui::SliderFloat("Shininess", &uniforms.shininess, 4.0f, 128.0f);
+           ImGui::SliderFloat("Shininess", &uniforms.shininess, 4.0f, 256.0f);
            //ImGui::Text("Specular Color");
            ImGui::ColorEdit4("Specular", glm::value_ptr(uniforms.specular));
        }
