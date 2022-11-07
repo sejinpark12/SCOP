@@ -1,5 +1,7 @@
 # SCOP
 
+[![Build](https://github.com/sejinpark12/SCOP/actions/workflows/Build.yml/badge.svg)](https://github.com/sejinpark12/SCOP/actions/workflows/Build.yml)
+
 ![SCOP](./blog/images/SCOP2.png)
 
 ### 프로젝트 설명
